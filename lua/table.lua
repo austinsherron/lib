@@ -1,5 +1,7 @@
 --!/usr/bin/lua
 
+require 'lib.lua.num'
+
 
 function table.keys(tbl, transform)
     out = {}
@@ -125,7 +127,7 @@ function table.combine_many(tbls)
         return combined
     end
 
-    for _, tbl in ipairs(tbls) do
+    for i, tbl in ipairs(tbls) do
         table.merge(combined, tbl)
     end
 
@@ -134,7 +136,7 @@ end
 
 
 -- note: this function will fail if tbl contains nil values
-function reverse_items(tbl, fail_on_dup)
+function table.reverse_items(tbl, fail_on_dup)
     local fail_on_dup = fail_on_dup or false
     local rev = {}
 
@@ -146,5 +148,29 @@ function reverse_items(tbl, fail_on_dup)
         rev[v] = k
     end 
     return rev
+end
+
+
+function table.slice(tbl, s, e)
+    if (tbl == nil or #tbl == 0) then
+        return {}
+    end
+
+    local s = bounds(s, 1, #tbl)
+    local e = bounds(e, 1, #tbl)
+
+    if (s > e) then
+        error('Invalid params: start = ' .. tostring(s) .. ' > end = ' .. tostring(e))
+    end
+
+    local slice = {}
+
+    for i = s or 1, e or #tbl, 1 do
+        local j = #slice + 1
+        print('slice[' .. tostring(j) .. '] = tbl[' .. tostring(i) .. '] = ' .. tostring(tbl[i]))
+        slice[j] = tbl[i]
+    end
+
+    return slice
 end
 
