@@ -111,7 +111,31 @@ function table.merge(l, r)
 end
 
 
+-- function table.concat(...)
+--   local all = table.pack(...)
+--   local new = {}
+--   local i = 1
+-- 
+--   for _, t in ipairs(all) do
+--     for _, v in ipairs(t) do
+--       new[i] = v
+--       i = i + 1
+--     end
+--   end
+-- 
+--   return new
+-- end
+
+
 function table.combine(l, r)
+  if (l == nil and r == nil) then
+    return {}
+  elseif (l == nil) then
+    return r
+  elseif (r == nil) then
+    return l
+  end
+
   local new = table.shallow_copy(l)
 
   table.merge(new, r)
@@ -167,10 +191,44 @@ function table.slice(tbl, s, e)
 
     for i = s or 1, e or #tbl, 1 do
         local j = #slice + 1
-        print('slice[' .. tostring(j) .. '] = tbl[' .. tostring(i) .. '] = ' .. tostring(tbl[i]))
         slice[j] = tbl[i]
     end
 
     return slice
+end
+
+
+function table.filter(tbl, filter)
+  local out = {}
+
+  for _, item in ipairs(tbl) do
+    if (filter(item)) then
+      table.insert(out, item)
+    end
+  end
+
+  return out
+end
+
+
+function table.map(tbl, mapper)
+  local out = {}
+
+  for _, item in ipairs(tbl) do
+    table.insert(out, mapper(item))
+  end
+
+  return out
+end
+
+
+function table.array_combine(l, r)
+  local new = table.shallow_copy(l)
+
+  for _, item in ipairs(r) do
+    table.insert(new, item)
+  end
+
+  return new
 end
 

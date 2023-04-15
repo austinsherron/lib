@@ -8,17 +8,11 @@ end
 
 local function update_pkg_path(paths)
     if (paths == nil or #paths == 0) then
-        return 
-    end
-
-    package.path = package.path .. paths[1]
-
-    if (#paths == 1) then
         return
     end
 
     for _, path in ipairs(paths) do
-        package.path = package.path .. ';' .. path 
+        package.path = package.path .. ';' .. path
     end
 end
 
@@ -35,5 +29,18 @@ end
 
 function add_module_to_lua_path(module_path)
     update_pkg_path({ make_lua_path(module_path), make_init_path(module_path) })
-end 
+end
+
+
+-- sourced from https://stackoverflow.com/questions/6380820/get-containing-path-of-lua-file
+function script_path()
+   local str = debug.getinfo(2, 'S').source:sub(2)
+   return str:match('(.*/)')
+end
+
+
+-- sourced from https://stackoverflow.com/questions/18884396/extracting-filename-only-with-pattern-matching
+function trim_extension(filename)
+  return filename:match('(.+)%..+')
+end
 
