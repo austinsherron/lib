@@ -198,30 +198,6 @@ function table.slice(tbl, s, e)
 end
 
 
-function table.filter(tbl, filter)
-  local out = {}
-
-  for _, item in ipairs(tbl) do
-    if (filter(item)) then
-      table.insert(out, item)
-    end
-  end
-
-  return out
-end
-
-
-function table.map(tbl, mapper)
-  local out = {}
-
-  for _, item in ipairs(tbl) do
-    table.insert(out, mapper(item))
-  end
-
-  return out
-end
-
-
 function table.array_combine(l, r)
   local new = table.shallow_copy(l)
 
