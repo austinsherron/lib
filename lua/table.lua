@@ -1,13 +1,13 @@
 --!/usr/bin/lua
 
-require 'lib.lua.num'
+require 'lib.lua.bool'
 
 
 function table.keys(tbl, transform)
-    out = {}
+    local out = {}
     transform = transform or function(k) return k end
 
-    for k, _ in pairs(tbl) do 
+    for k, _ in pairs(tbl) do
       table.insert(out, transform(k))
     end
 
@@ -16,10 +16,10 @@ end
 
 
 function table.values(tbl, transform)
-    out = {}
+    local out = {}
     transform = transform or function(v) return v end
 
-    for _, v in pairs(tbl) do 
+    for _, v in pairs(tbl) do
       table.insert(out, transform(v))
     end
 
@@ -31,9 +31,9 @@ function table.map_items(tbl, transforms)
     transform_k = transforms.keys or function(k) return k end
     transform_v = transforms.values or function(v) return v end
 
-    out = {}
+    local out = {}
 
-    for k, v in pairs(tbl) do 
+    for k, v in pairs(tbl) do
       out[transform_k(k)] = transform_v(v)
     end
 
@@ -58,6 +58,17 @@ function table.shallow_copy(tbl)
 end
 
 
+local function tostring_can_be_table(maybe_tbl)
+  -- return ternary(type(maybe_tbl) == 'table', table.tostring(maybe_tbl), tostring(maybe_tbl))
+
+  if type(maybe_tbl) == 'table' then
+    return table.tostring(maybe_tbl)
+  end
+
+  return tostring(maybe_tbl)
+end
+
+
 function table.tostring(tbl)
   if (tbl == nil) then
     return ''
@@ -67,12 +78,12 @@ function table.tostring(tbl)
   local i = 1 ; local j = 1
 
   for k, v in pairs(tbl) do
-    local nxt = (i == 1 and '' or ', ') .. tostring(k) .. ' = ' .. tostring(v)
+    local nxt = (i == 1 and '' or ', ') .. tostring(k) .. ' = ' .. tostring_can_be_table(v)
     str = str .. nxt
     i = i + 1
 
     if (arr_str ~= nil and tbl[j] ~= nil) then
-      local nxt = (j == 1 and '' or ', ') .. tostring(v)
+      local nxt = (j == 1 and '' or ', ') .. tostring_can_be_table(v)
       arr_str = arr_str .. nxt
       j = j + 1
     elseif (arr_str ~= nil) then
@@ -90,7 +101,7 @@ function table.is_array(tbl)
   for _ in pairs(tbl) do
     i = i + 1
 
-    if (t[i] == nil) then
+    if (tbl[i] == nil) then
       return false
     end   -- end if nil
   end     -- end for in tbl
@@ -115,14 +126,14 @@ end
 --   local all = table.pack(...)
 --   local new = {}
 --   local i = 1
--- 
+--
 --   for _, t in ipairs(all) do
 --     for _, v in ipairs(t) do
 --       new[i] = v
 --       i = i + 1
 --     end
 --   end
--- 
+--
 --   return new
 -- end
 
@@ -151,7 +162,7 @@ function table.combine_many(tbls)
         return combined
     end
 
-    for i, tbl in ipairs(tbls) do
+    for _, tbl in ipairs(tbls) do
         table.merge(combined, tbl)
     end
 
@@ -168,9 +179,8 @@ function table.reverse_items(tbl, fail_on_dup)
         if (rev[v] ~= nil and fail_on_dup) then
             error('duplicate value=' .. v .. ' encountered in table')
         end
-        
         rev[v] = k
-    end 
+    end
     return rev
 end
 

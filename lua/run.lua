@@ -11,8 +11,9 @@ local function make_cmd_silent_if_necessary(cmd, silent)
   return ternary(silent, cmd .. ' 2> /dev/null', cmd)
 end
 
+local Run = {}
 
-function get_env(var_name)
+function Run.get_env(var_name)
   return os.getenv(var_name)
 end
 
@@ -32,11 +33,22 @@ function mkdir(dirname, ignore_errors)
 end
 
 
+function cp(src, dst, ignore_errors)
+  local cmd_flags = ''
+
+  if (is_dir(src)) then
+    cmd_flags = '-r '
+  end
+
+  return run('cp ' .. cmd_flags .. src .. ' ' .. dst)
+end
+
+
 function get_cmd_output(cmd, silent)
   local cmd = make_cmd_silent_if_necessary(cmd, silent)
 
   local handle = io.popen(cmd)
-  local result = handle:read("*a")
+  local result = handle:read('*a')
   handle:close()
 
   return result
@@ -47,6 +59,10 @@ function git_clone(url, path)
   return run(string.format("[ -e '%s' ] || git clone '%s' '%s'", path, url, path))
 end
 
+
+function git_root()
+  return get_cmd_output('git rev-parse --show-toplevel')
+end
 
 function is_dir(path)
   local f = io.open(path, 'r')
@@ -69,20 +85,32 @@ function ls(path, basename)
   local cmd = ternary(basename, cmd_base .. ' | xargs -n 1 basename', cmd_base)
 
   local out = get_cmd_output(cmd, true)
-  return string.split_lines(out)
+  return stream(string.split_lines(out))
+    :collect(function (arr) return arr end)
 end
 
 
-function require_for_init(path, require_base)
-  local path = path or '.'
-  local lua_files = ls(path .. '/*.lua', true)
+function require_for_init(dir, require_base)
+  if not is_dir(dir) then
+    error('dir=' .. dir .. 'must be a directory')
+  end
 
-  return stream(lua_files)
-    :filter(function(i) return i ~= 'init.lua' end)
-    :map(trim_extension)
-    :map(function(i) return require_base .. '.' .. i end)
-    :map(function(i) return require(i) end)
-    :filter(function(i) return type(i) == 'table' end)
-    :reduce(table.combine, {})
+  local result = {}
+
+  for _, file in ipairs(ls(dir, true)) do
+    local path = dir ..'/' .. file
+
+    if is_dir(path) and file ~= '' then
+      local require_base = require_base .. '.' .. file
+      table.insert(result, require_for_init(path, require_base))
+    elseif (string.endswith(file, '.lua') and file ~= 'init.lua') then
+      local wo_extension = trim_extension(file)
+      local to_require = require_base .. '.' .. wo_extension
+
+      table.insert(result, require(to_require))
+    end
+  end
+
+  return result
 end
 
