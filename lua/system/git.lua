@@ -7,7 +7,7 @@ local Git = {}
 --
 ---@param url string: the url of the git repo to clone
 ---@param path string: the path to which to clone the git repo
----@return boolean?,integer?: a boolean that indicates success and an integer that corresponds
+---@return (boolean?,integer?): a boolean that indicates success and an integer that corresponds
 -- to the command's return code
 function Git.git_clone(url, path)
   return shell.run(string.format("[ -e '%s' ] || git clone '%s' '%s'", path, url, path))
