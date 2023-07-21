@@ -5,7 +5,7 @@
 ---@field lua_path fun(): v: string|nil: lua "exec" path
 ---@field nvim_root fun(): v: string|nil: path to the root of the nvim home dir
 ---@field nvundle fun(): v: string|nil: path to the root of the nvim packages (plugins) dir
----@field projects_root fun(): v: string|nil: path to the root of the ""
+---@field projects_root fun(): v: string|nil: path to the root of the projects dir
 local Env = {}
 Env.__index = {}
 
