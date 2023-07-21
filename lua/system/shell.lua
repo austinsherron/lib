@@ -15,7 +15,7 @@ local Shell = {}
 ---@param cmd string: the command to execute
 ---@param silent boolean?: optional, defaults to false; if true, command output will be
 -- redirected
----@return boolean?,integer?: a boolean that indicates success and an integer that corresponds
+---@return (boolean?,integer?): a boolean that indicates success and an integer that corresponds
 -- to the command's return code
 function Shell.run(cmd, silent)
   cmd = make_cmd_silent_if_necessary(cmd, silent)
@@ -30,7 +30,7 @@ end
 ---@param dirname string: the name or relative/absolute path of the directory to create
 ---@param ignore_errors boolean?: optional, defaults to false; if true, the command won't
 -- fail if the dir already exists and it will create parent directories as necessary
----@return boolean?,integer?: a boolean that indicates success and an integer that corresponds
+---@return (boolean?,integer?): a boolean that indicates success and an integer that corresponds
 -- to the command's return code
 function Shell.mkdir(dirname, ignore_errors)
   ignore_errors = ignore_errors or false
@@ -44,12 +44,12 @@ end
 --
 ---@param src string: the name or relative/absolute path of the file/dir to copy
 ---@param dst string: the name or relative/absolute path of the destination of the copy
----@return boolean?,integer?: a boolean that indicates success and an integer that corresponds
+---@return (boolean?,integer?): a boolean that indicates success and an integer that corresponds
 -- to the command's return code
 function Shell.cp(src, dst)
   local cmd_flags = ''
 
-  if (Shell.is_dir(src)) then
+  if Shell.is_dir(src) then
     cmd_flags = '-r '
   end
 
@@ -86,7 +86,7 @@ end
 function Shell.is_dir(path)
   local f = io.open(path, 'r')
 
-  if (f == nil) then
+  if f == nil then
       return false
   end
 
