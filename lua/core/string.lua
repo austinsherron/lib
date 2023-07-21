@@ -1,3 +1,6 @@
+local Bool  = require 'lib.lua.core.bool'
+local Table = require 'lib.lua.core.table'
+
 
 -- TODO: create "Indexable" class that implements python-like indexing for strings
 --       see `lib.lua.core.string.Indexable`
@@ -74,10 +77,102 @@ end
 
 --- str.split w/ sep = '\n' (newline character).
 --
----@param str string: a string to split along '\n' (newline character)
----@return table?: a string split along '\n' (newline character)
+---@param str string?: a string to split along '\n' (newline character)
+---@return string[]?: a string split along '\n' (newline character)
 function String.split_lines(str)
   return String.split(str, '\n')
+end
+
+
+--- Returns true if the provided string is not nil and not empty.
+--
+---@param str string?: the string to check
+---@return true if the provided string is not nil and not empty, false otherwise
+function String.not_nil_or_empty(str)
+  return str ~= nil and str ~= ''
+end
+
+
+--- Returns true if the provided string nil or empty.
+--
+---@param str string?: the string to check
+---@return true if the provided string is nil or empty, false otherwise
+function String.is_nil_or_empty(str)
+  return str == nil or str == ''
+end
+
+
+--- Converts arbitrary objects to human-readable strings.
+--
+--  TODO: add support for functions
+--
+---@param obj any?: the object to "stringify"
+---@return string: the stringified version of the provided object
+function String.tostring(obj)
+  if type(obj) ~= 'table' or obj == nil then
+    return tostring(obj)
+  end
+
+  -- if we're here , we're dealing w/ some kind of table; since classes/objects are tables,
+  -- check to see if the table has a tostring meta-method; if not, use the home-baked generic
+  -- table.tostring function
+  return Bool.ternary(
+    obj.__tostring == nil,
+    function() return Table.tostring(obj) end,
+    function() return tostring(obj) end
+  )
+end
+
+
+local function do_pad(str, char, len, joiner)
+  if len <= #str then
+    return str
+  end
+
+  local num = len - #str
+  local pad = ''
+
+  for _ = 1, num do
+    pad = pad .. char
+  end
+
+  return joiner(pad)
+end
+
+
+--- Pads the left-hand side of a string (i.e.: the beginning of the string in left-to-right
+--  languages) w/ char until the string is len characters. For example:
+--
+--    String.lpad('hello', '$', 10) == '$$$$$hello'
+--
+--  If #str >= len, str is returned w/o modifications.
+--
+---@param str string: the string to pad
+---@param char string: the character w/ which to pad str
+---@param len integer: the desired length of the string to be returned
+---@return string: str padded by char up to length len, or str if #str >= len
+function String.lpad(str, char, len)
+  return do_pad(str, char, len, function(pad)
+    return pad .. str
+  end)
+end
+
+
+--- Pads the right-hand side of a string (i.e.: the end of the string in left-to-right
+--  languages) w/ char until the string is len characters. For example:
+--
+--    String.rpad('byebye', '!', 11) == 'byebye!!!!!'
+--
+--  If #str >= len, str is returned w/o modifications.
+--
+---@param str string: the string to pad
+---@param char string: the character w/ which to pad str
+---@param len integer: the desired length of the string to be returned
+---@return string: str padded by char up to length len, or str if #str >= len
+function String.rpad(str, char, len)
+  return do_pad(str, char, len, function(pad)
+    return str ..  pad
+  end)
 end
 
 return String

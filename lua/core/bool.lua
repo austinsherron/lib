@@ -22,5 +22,14 @@ function Bool.ternary(cond, T, F)
   if cond then return func_or_val(T) else return func_or_val(F) end
 end
 
+
+--- Converts to a true boolean a boolean value represented as a string.
+--
+---@param value string?: the value to convert to a boolean
+---@return boolean: true if value == "true", false otherwise
+function Bool.as_bool(value)
+  return value == 'true'
+end
+
 return Bool
 
