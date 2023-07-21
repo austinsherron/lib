@@ -1,6 +1,22 @@
 
 local Path = {}
 
+--- Equivalent to dirname in POSIX systems. Sourced from
+--  https://github.com/Donearm/scripts/blob/master/lib/dirname.lua.
+--
+---@param path string: the path string
+---@return string: the dirname of the provided path or empty string if the string doesn't
+-- contain any path separators
+function Path.dirname(path)
+  if not path:match('.-/.-') then
+    return ''
+  end
+
+  local dir, _ = string.gsub(path, '(.*/)(.*)', '%1')
+  return dir
+end
+
+
 --- Returns the path of the lua script that's currently executing. Sourced from
 --  https://stackoverflow.com/questions/6380820/get-containing-path-of-lua-file.
 --
