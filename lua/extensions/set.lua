@@ -1,10 +1,12 @@
-local tbl = require 'lib.lua.core.table'
+local Table = require 'lib.lua.core.table'
+local Iter  = require 'lib.lua.extensions.iter'
 
 
 --- A simple set implementation whose instances are backed by tables.
 --
+---@generic T
 ---@class Set<T>: { [T]: boolean }
----@field private items { [T]: boolean }: backing data structure
+---@field private items { [`T`]: boolean }: backing data structure
 ---@field private len integer: "cached" length of the set
 local Set = {}
 Set.__index = Set
@@ -22,7 +24,7 @@ end
 --
 ---@generic T
 ---@param initial T[]?: initial items to add to the set
----@return Set<T>: this instance
+---@return Set: this instance
 function Set.new(initial)
   initial = initial or {}
   local this = { items = {}, len = 0 }
@@ -41,9 +43,8 @@ end
 --  Note: this copy constructor performs "shallow" copies, meaning that complex/nested
 --  objects are not truly copied (read: only their references are copied).
 --
----@generic T
----@param o Set<T>: the set to copy
----@return Set<T>: a new instance that is a shallow copy of o
+---@param o Set: the set to copy
+---@return Set: a new instance that is a shallow copy of o
 function Set.copy(o)
   local this = { items = {}, len = 0 }
 
@@ -116,32 +117,56 @@ function Set:__eq(o)
 end
 
 
---- TODO: Constructs and returns the union of this set and the set "o".
+---@private
+function Set:entries()
+  return Table.keys(self.items)
+end
+
+
+--- Constructs and returns the union of this set and the set "o".
 --
----@generic T
----@param o Set<T>: the "other" set
+---@param o Set: the "other" set
 function Set:__add(o)
-  return Set.new()
+  local new = Set.copy(self)
+  new:addall(table.unpack(o:entries()))
+  return new
 end
 
 
---- TODO: Constructs and returns the difference of this set and the set "o".
+--- Constructs and returns the difference of this set and the set "o".
 --
----@generic T
----@param o Set<T>: the "other" set
+---@param o Set: the "other" set
 function Set:__sub(o)
-  return Set.new()
+  local new = Set.new()
+
+  for _, v in ipairs(self) do
+    if not o:contains(v) then
+      new:add(v)
+    end
+  end
+
+  return new
 end
 
 
--- TODO: implement alias for + (__add)
+---Alias for Set:_add.
+--
+---@see Set.__add
 function Set:__concat(o)
   return self + o
 end
 
 
---- TODO: implement an iterator
-function Set:__pairs()
+--- Metamethod that allows sets to be used w/ the ipairs function.
+--
+---@generic T
+---@return fun(): (number,T): a next function that returns successive entries in this set
+---@return T[]: an array-like table that contains the elements in this set
+---@return nil: the starting point for iteration
+function Set:__ipairs()
+  local entries = self:entries()
+  local next = Iter.array(entries)
+  return next, entries, nil
 end
 
 
@@ -149,8 +174,8 @@ end
 --
 ---@return string: a string representation of the set
 function Set:__tostring()
-  local keys = tbl.keys(self.items)
-  return tbl.tostring(keys, 'set(', ')')
+  local entries = self:entries()
+  return Table.tostring(entries, 'set(', ')')
 end
 
 return Set
