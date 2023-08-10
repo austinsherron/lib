@@ -1,5 +1,5 @@
-local Table = require 'lib.lua.core.table'
-local Iter  = require 'lib.lua.extensions.iter'
+local Table = require 'toolbox.core.table'
+local Iter  = require 'toolbox.extensions.iter'
 
 
 --- A simple set implementation whose instances are backed by tables.

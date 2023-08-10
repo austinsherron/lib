@@ -1,7 +1,7 @@
-local String    = require 'lib.lua.core.string'
-local Formatter = require 'lib.lua.log.formatter'
-local LogLevel  = require 'lib.lua.log.level'
-local File      = require 'lib.lua.system.fs'
+local String    = require 'toolbox.core.string'
+local Formatter = require 'toolbox.log.formatter'
+local LogLevel  = require 'toolbox.log.level'
+local File      = require 'toolbox.system.fs'
 
 
 --- A logger that writes messages to arbitrary log files.

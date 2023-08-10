@@ -1,4 +1,4 @@
-local num = require 'lib.lua.core.num'
+local num = require 'toolbox.core.num'
 
 
 local Tbl = {}

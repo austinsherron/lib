@@ -1,4 +1,4 @@
-local Bool  = require 'lib.lua.core.bool'
+local Bool  = require 'toolbox.core.bool'
 
 
 --- Contains iterator "next" helper functions.
