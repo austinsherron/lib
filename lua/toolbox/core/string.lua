@@ -1,9 +1,9 @@
-local Bool  = require 'lib.lua.core.bool'
-local Table = require 'lib.lua.core.table'
+local Bool  = require 'toolbox.core.bool'
+local Table = require 'toolbox.core.table'
 
 
 -- TODO: create "Indexable" class that implements python-like indexing for strings
---       see `lib.lua.core.string.Indexable`
+--       see `toolbox.core.string.Indexable`
 
 ---@class String
 local String = {}

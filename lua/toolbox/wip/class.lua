@@ -1,4 +1,4 @@
-local tbl = require 'lib.lua.core.table'
+local tbl = require 'toolbox.core.table'
 
 
 ---@alias ClassParams { static_members: table?, constructor: (fun(any?): this: table)? }

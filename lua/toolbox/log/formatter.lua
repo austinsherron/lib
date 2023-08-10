@@ -1,4 +1,4 @@
-local String = 'lib.lua.core.string'
+local String = 'toolbox.core.string'
 
 
 --- Contains utilities for formatting lines for log files.

@@ -1,6 +1,6 @@
-local bool = require 'lib.lua.core.bool'
-local stream = require 'lib.lua.utils.stream'
-local str = require 'lib.lua.core.string'
+local bool = require 'toolbox.core.bool'
+local stream = require 'toolbox.utils.stream'
+local str = require 'toolbox.core.string'
 
 
 local function make_cmd_silent_if_necessary(cmd, silent)

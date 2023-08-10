@@ -1,6 +1,6 @@
-local str   = require 'lib.lua.core.string'
-local pth   = require 'lib.lua.system.path'
-local shell = require 'lib.lua.system.shell'
+local str   = require 'toolbox.core.string'
+local pth   = require 'toolbox.system.path'
+local shell = require 'toolbox.system.shell'
 
 
 local Import = {}

@@ -1,4 +1,4 @@
-local map = require 'lib.lua.utils.map'
+local map = require 'toolbox.utils.map'
 
 
 --- A class that attempts to roughly replicate Java 8's Stream API:
