@@ -1,0 +1,37 @@
+local Num = require 'toolbox.core.num'
+
+
+describe('Tests for the "Num" utility singleton', function()
+  describe('Num.bounds', function()
+    local min, max = 0, 5
+
+    it('should return n if min < n < max', function()
+      local result = Num.bounds(3, min, max)
+      assert.equals(result, 3)
+    end)
+    it('should return n/min if min <= n < max', function()
+      local result = Num.bounds(min, min, max)
+      assert.equals(result, min)
+    end)
+    it('should return n/max if min < n <= max', function()
+      local result = Num.bounds(max, min, max)
+      assert.equals(result, max)
+    end)
+    it('should return min if n < min', function()
+      local result = Num.bounds(-2, min, max)
+      assert.equals(result, min)
+    end)
+    it('should return max if n > max', function()
+      local result = Num.bounds(9, min, max)
+      assert.equals(result, max)
+    end)
+    it('should return n i min == n == max', function()
+      local result = Num.bounds(max, max, max)
+      assert.equals(result, max)
+    end)
+    it('should raise and error if min > max', function()
+      assert.has.errors(function() Num.bounds(3, max, min) end)
+    end)
+  end)
+end)
+
