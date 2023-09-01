@@ -1,4 +1,7 @@
 
+--- Contains utilities for interacting w/ and manipulating boolean values.
+--
+---@class Bool
 local Bool = {}
 
 local function func_or_val(ToF)
@@ -11,7 +14,9 @@ end
 
 
 --- Function that makes Lua ternary expressions more like those in other languages.
---
+---
+--- Note: to return functions, the functions themselves must be wrapped in functions.
+---
 ---@generic TType, FType
 ---@param cond boolean: the condition to evaluate
 ---@param T TType|fun(...): t: TType: value if cond == true
@@ -29,6 +34,16 @@ end
 ---@return boolean: true if value == "true", false otherwise
 function Bool.as_bool(value)
   return value == 'true'
+end
+
+
+--- Returns bool if bool ~= nil, otherwise returns default.
+---
+---@param bool boolean|nil: the boolean to return if not nil
+---@param default boolean: the value to return if bool is nil
+---@return boolean: bool if bool ~= nil, otherwise default
+function Bool.or_default(bool, default)
+  return Bool.ternary(bool == nil, default, bool)
 end
 
 return Bool
