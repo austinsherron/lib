@@ -41,11 +41,15 @@ function Iter.array(arr)
     local i = nxt()
     idx = idx + 1
 
+    if #arr == 0 then
+      return nil, nil
+    end
+
     if i == -1 then
       return nil
     end
 
-    local v, _ = next(arr, i)
+    local _, v = next(arr, i)
     return idx, v
   end
 end
