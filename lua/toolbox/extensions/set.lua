@@ -24,7 +24,7 @@ end
 --
 ---@generic T
 ---@param initial T[]?: initial items to add to the set
----@return Set: this instance
+---@return Set: a new instance
 function Set.new(initial)
   initial = initial or {}
   local this = { items = {}, len = 0 }
@@ -35,6 +35,26 @@ function Set.new(initial)
 
   setmetatable(this, Set)
   return this
+end
+
+
+--- Constructor
+---
+---@generic T
+---@param ... T?: initial contents
+---@return Set: a new instance
+function Set.of(...)
+  return Set.new(Table.pack(...))
+end
+
+
+--- Constructor for a set w/ one (initial) item.
+---
+---@generic T
+---@param item T: initial contents
+---@return Set: a new instance
+function Set.only(item)
+  return Set.new({ item })
 end
 
 
@@ -117,7 +137,8 @@ function Set:__eq(o)
 end
 
 
----@private
+---@generic T
+---@return T[]: an array-like table that contains the entries in the set
 function Set:entries()
   return Table.keys(self.items)
 end
@@ -128,7 +149,7 @@ end
 ---@param o Set: the "other" set
 function Set:__add(o)
   local new = Set.copy(self)
-  new:addall(table.unpack(o:entries()))
+  new:addall(Table.unpack(o:entries()))
   return new
 end
 
