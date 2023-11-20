@@ -1,4 +1,4 @@
-local Bool = require 'toolbox.core.bool'
+local Common = require 'toolbox.core.__common'
 
 
 --- Contains utilities for interacting w/ and manipulating numerical values, measurements,
@@ -35,21 +35,27 @@ end
 --- inclusive, i.e.: the result is true if n == l
 ---@param ui boolean|nil: optional, defaults to true; if true the upper bound is
 --- inclusive, i.e.: the result is true if n == u
----@return
+---@return boolean: true if n is numerically "between" l and u, where "between" is
+--- optionally inclusive on the lower bound if li == true, and optionally inclusive on the
+--- upper bound if ui == true
 function Num.bounded(n, l, u, li, ui)
-  li = Bool.or_default(li, true)
-  ui = Bool.or_default(ii, false)
+  if l > u then
+    error(Common.String.fmt('Num.bounded: l=%s cannot be > u=%s', l, u))
+  end
 
-  in_l = Bool.ternary(
+  li = Common.Bool.or_default(li, true)
+  ui = Common.Bool.or_default(ui, false)
+
+  local in_l = Common.Bool.ternary(
     li,
     function() return n >= l end,
     function() return n > l end
   )
 
-  in_u = Bool.ternary(
+  local in_u = Common.Bool.ternary(
     ui,
-    function() return n >= u end,
-    function() return n > u end
+    function() return n <= u end,
+    function() return n < u end
   )
 
   return in_l and in_u
@@ -72,28 +78,9 @@ function Num.ebounded(n, l, u)
 end
 
 
---- Returns the provided number n if it is min < n < max, otherwise, returns min if n < min
---- or max if n > max.
----
----@param n number: the number to bound
----@param min number: the minimum number that this function will return; must be < max
----@param max number: the maximum number that this function will return; must be > min
----@return number: n if min < n < max, otherwise min if n < min or max if n > max
----@error if min > max
-function Num.bounds(n, min, max)
-  if min > max then
-    error(string.format('Num.bounds: min (%s) must be <= max (%s)', min, max))
-  end
-
-  if n < min then
-    return min
-  end
-
-  if n > max then
-    return max
-  end
-
-  return n
+---@see Common.Num.bounds
+function Num.bounds(...)
+  return Common.Num.bounds(...)
 end
 
 return Num
