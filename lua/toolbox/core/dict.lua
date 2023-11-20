@@ -1,4 +1,4 @@
-local Table = require 'toolbox.core.table'
+local Common = require 'toolbox.core.__common'
 
 
 --- Contains utilities for interacting w/ dictionary like tables, i.e.: tables whose keys
@@ -66,9 +66,9 @@ function Dict.equals(l, r)
   for k, v in pairs(l) do
     if type(r[k]) ~= type(v) then
       return false
-    elseif not Table.is(v) and r[k] ~= v then
+    elseif not Common.Table.is(v) and r[k] ~= v then
       return false
-    elseif Table.is(v) and not Dict.equals(v, r[k]) then
+    elseif Common.Table.is(v) and not Dict.equals(v, r[k]) then
       return false
     end
   end

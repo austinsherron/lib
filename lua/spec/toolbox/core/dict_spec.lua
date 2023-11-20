@@ -137,7 +137,7 @@ describe('Dict', function()
     end)
   end)
 
-  describe('.compute(dict, key, compute))', function()
+  describe('.compute_if_nil(dict, key, compute))', function()
     it("it should add compute's return value to the dict if it's not present", function()
       local dict = { a = 1, b = 2 }
       local compute = spy.new(function() return 3 end)

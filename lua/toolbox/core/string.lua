@@ -1,10 +1,13 @@
-local Bool  = require 'toolbox.core.bool'
-local Num   = require 'toolbox.core.num'
-local Table = require 'toolbox.core.table'
+local Common = require 'toolbox.core.__common'
+local Type   = require 'toolbox.meta.type'
+
+-- local see = require 'see'
 
 
--- TODO: create "Indexable" class that implements python-like indexing for strings
---       see `toolbox.core.string.Indexable`
+local TO_STR_NEEDS_SPC_HANDLING = Type.oneof('table', 'function')
+
+--- TODO: create "Indexable" class that implements python-like indexing for strings
+---       see `toolbox.core.string.Indexable`
 
 --- Contains utilities for interacting w/ and manipulating strings.
 ---
@@ -16,16 +19,46 @@ local String = {}
 ---@param o any|nil: the object to check
 ---@return boolean: true if o is a string, false otherwise
 function String.is(o)
-  return type(o) == 'string'
+  return Type.is(o, 'string')
+end
+
+
+---@see Common.String.nil_or_empty
+function String.nil_or_empty(...)
+  return Common.String.nil_or_empty(...)
+end
+
+
+--- Returns true if the provided string is not nil and not empty.
+---
+---@param str string?: the string to check
+---@return true if the provided string is not nil and not empty, false otherwise
+function String.not_nil_or_empty(str)
+  return str ~= nil and str ~= ''
+end
+
+
+--- Checks if str contains substr.
+---
+---@param str string: the string to check for containment of substr
+---@param substr string: the substring to check for containment in str
+---@return boolean: true if substr is a substring of str, false otherwise
+function String.contains(str, substr)
+  return string.find(str, substr) ~= nil
 end
 
 
 --- Capitalizes the given string, even if str is all upper-case.
 ---
 ---@param str string: the string to capitalize
+---@param regularize boolean|nil: optional, defaults to true; if true, the string will be
+--- lowercased before being capitalized
 ---@return string: str, but capitalized
-function String.capitalize(str)
-  return (str:lower():gsub('^%l', string.upper))
+function String.capitalize(str, regularize)
+  regularize = Common.Bool.or_default(regularize, true)
+  str = Common.Bool.ternary(regularize, str:lower(), str)
+
+  return (str:gsub('^%l', string.upper))
 end
 
 
@@ -44,16 +77,32 @@ end
 --- Returns true if the provided string starts with the provided prefix, or if str == pfx.
 --  false if either str or pfx == nil.
 --
----@param str string?: the string to check
----@param pfx string?: the prefix to check
+---@param str string|nil: the string to check
+---@param pfx string|nil: the prefix to check
 ---@return boolean: true if str starts with pfx or str == pfx; false otherwise, or if either str or
--- pfx == nil
+-- pfx == nil or ''
 function String.startswith(str, pfx)
-  if str == nil or pfx == nil then
+  if String.nil_or_empty(str) or String.nil_or_empty(pfx) then
       return false
   end
 
   return #pfx <= #str and str:sub(1, #pfx) == pfx
+end
+
+
+--- Returns true if the provided string ends with the provided suffix, or if str == sfx.
+--  false if either str or sfx == nil.
+--
+---@param str string?: the string to check
+---@param sfx string?: the suffix to check
+---@return boolean: true if str ends with sfx or str == sfx; false otherwise, or if either str or
+-- sfx == nil or ''
+function String.endswith(str, sfx)
+  if String.nil_or_empty(str) or String.nil_or_empty(sfx) then
+        return false
+    end
+
+    return #sfx <= #str and str:sub(-#sfx, #str) == sfx
 end
 
 
@@ -77,7 +126,7 @@ end
 --- Trims all occurrences of the char/string "to_trim" from both ends of "str". Some
 --- examples:
 ---
----   String.trim('xxxxxxhello there friendxxxx') == 'hello there friend'
+---   String.trim('xxxxxxhello there friendxxxx', 'x') == 'hello there friend'
 ---   String.trim('byebyehello there friendbyebye', 'bye') == 'hello there friend'
 ---   String.trim('      no need to say goodbye!       ') == 'no need to say goodbye!'
 ---
@@ -91,20 +140,15 @@ function String.trim(str, to_trim)
   return (string.gsub(str, '^' .. to_trim .. '*(.-)' .. to_trim .. '*$', '%1'))
 end
 
+local function validate_char(func, char)
+  if #char == 0 then
+    error(String.fmt('String.trim_before: char cannot be the empty string', func))
+  end
 
---- Returns true if the provided string ends with the provided suffix, or if str == sfx.
---  false if either str or sfx == nil.
---
----@param str string?: the string to check
----@param sfx string?: the suffix to check
----@return boolean: true if str ends with sfx or str == sfx; false otherwise, or if either str or
--- sfx == nil
-function String.endswith(str, sfx)
-    if str == nil or sfx == nil then
-        return false
-    end
+  if #char > 1 then
+    error(String.fmt('String.%s: #char cannot be > 1 (char="%s")', func, char))
+  end
 
-    return #sfx <= #str and str:sub(-#sfx, #str) == sfx
 end
 
 
@@ -116,10 +160,12 @@ end
 --  If delim doesn't exist in str, str is returned unchanged.
 --
 ---@param str string: the string to trim
----@param delim string: the char/string to trim chars before
+---@param delim string: the char to trim chars before
 ---@return string: str w/ chars trimmed from start to first occurrence of delim, or str
 -- if delim isn't present in str
 function String.trim_before(str, delim)
+  validate_char('trim_before', delim)
+
   local idx = string.find(str, delim, 1, true)
 
   if idx == nil then
@@ -142,6 +188,8 @@ end
 ---@return string: str w/ chars trimmed from first occurrence of delim to its end, or str
 -- if delim isn't present in str
 function String.trim_after(str, delim)
+  validate_char('trim_after', delim)
+
   local idx = string.find(str, delim, 1, true)
 
   if idx == nil then
@@ -149,42 +197,6 @@ function String.trim_after(str, delim)
   end
 
   return string.sub(str, 1, idx - 1)
-end
-
-
---- Splits into an array-like table the provided string wherever "sep" is encountered in
---  that string. For example, the following call:
---
---    String.split('helloxxxtherexxxbeautiful', 'xxx')
---
---  Would result in the following return value:
---
---    { 'hello', 'there', 'beautiful' }
---
--- Empty strings between instances of sep are filtered from the return value. The return
--- value if str == nil is nil, and { str } if sep == nil.
---
----@param str string?: the string to split
----@param sep string: the separator on which to split str
----@return string[]?: an array like table of strings comprised of the provided string
--- split wherever the substring sep is encountered; nil if str == nil; { str } if sep == nil
-function String.split(str, sep)
-  if str == nil then
-    return nil
-  end
-
-  if sep == nil then
-    return { str }
-  end
-
-  local split = {}
-  local pat = '([^'.. sep ..']+)'
-
-  for part in string.gmatch(str, '([^'..sep..']+)') do
-    table.insert(split, part)
-  end
-
-  return split
 end
 
 
@@ -230,9 +242,9 @@ end
 function RJoinCursor:inc()
   self.level = self.level + 1
 
-  self.si = Num.bounds(self.level, 1, self.len_j)
-  self.li = Num.bounds(self.level, 1, self.len_ld)
-  self.ri = Num.bounds(self.level, 1, self.len_rd)
+  self.si = Common.Num.bounds(self.level, 1, self.len_j)
+  self.li = Common.Num.bounds(self.level, 1, self.len_ld)
+  self.ri = Common.Num.bounds(self.level, 1, self.len_rd)
 
   return self
 end
@@ -243,16 +255,16 @@ end
 local RecursiveJoin = {}
 
 function RecursiveJoin.element(element, separators, ldelims, rdelims, cursor)
-  if type(element) == 'table' then
+  if Type.is(element, 'table') then
     return RecursiveJoin.array(element, separators, ldelims, rdelims, cursor:inc())
-  elseif type(element) == 'string' then
+  elseif Type.is(element, 'string') then
     return element
   end
 
   local element_str = tostring(element)
 
   error(
-    'String.rjoin: element=' .. element_str .. ' is of unrecognized type=' .. type(element)
+    'String.rjoin: element=' .. element_str .. ' is of unrecognized type=' .. Type.of(element)
   )
 end
 
@@ -299,12 +311,43 @@ end
 --- elements; optional, defaults to { '', ')' }
 ---@return string: a string comprised of string/sub-array elements of arr
 function String.rjoin(arr, separators, ldelims, rdelims)
-  separators = Bool.ternary(Table.nil_or_empty(separators), { ', ' },     separators)
-  ldelims    = Bool.ternary(Table.nil_or_empty(ldelims),    { '', '(' },  ldelims)
-  rdelims    = Bool.ternary(Table.nil_or_empty(rdelims),    { '', ')' },  rdelims)
+  separators = Common.Bool.ternary(Common.Table.nil_or_empty(separators), { ', ' },     separators)
+  ldelims    = Common.Bool.ternary(Common.Table.nil_or_empty(ldelims),    { '', '(' },  ldelims)
+  rdelims    = Common.Bool.ternary(Common.Table.nil_or_empty(rdelims),    { '', ')' },  rdelims)
 
   local cursor = RJoinCursor.new(separators, ldelims, rdelims)
   return RecursiveJoin.array(arr, separators, ldelims, rdelims, cursor:inc())
+end
+
+
+--- Splits into an array-like table the provided string wherever "sep" is encountered in
+--  that string. For example, the following call:
+--
+--    String.split('helloxxxtherexxxbeautiful', 'xxx')
+--
+--  Would result in the following return value:
+--
+--    { 'hello', 'there', 'beautiful' }
+--
+-- Empty strings between instances of sep are filtered from the return value. The return
+-- value if sep == nil is { str }.
+--
+---@param str string: the string to split
+---@param sep string: the separator on which to split str
+---@return string[]: an array like table of strings comprised of the provided string
+-- split wherever the substring sep is encountered; { str } if sep == nil
+function String.split(str, sep)
+  if sep == nil then
+    return { str }
+  end
+
+  local split = {}
+
+  for part in string.gmatch(str, '([^'..sep..']+)') do
+    table.insert(split, part)
+  end
+
+  return split
 end
 
 
@@ -317,47 +360,49 @@ function String.split_lines(str)
 end
 
 
---- Returns true if the provided string is not nil and not empty.
---
----@param str string?: the string to check
----@return true if the provided string is not nil and not empty, false otherwise
-function String.not_nil_or_empty(str)
-  return str ~= nil and str ~= ''
-end
-
-
---- Returns true if the provided string nil or empty.
---
----@param str string?: the string to check
----@return true if the provided string is nil or empty, false otherwise
-function String.nil_or_empty(str)
-  return str == nil or str == ''
-end
-
-
---- Converts arbitrary objects to human-readable strings.
---
---  TODO: add support for functions
---
----@param obj any?: the object to "stringify"
----@return string: the stringified version of the provided object
-function String.tostring(obj)
-  if type(obj) ~= 'table' or obj == nil then
-    return tostring(obj)
-  end
-
-  -- if we're here , we're dealing w/ some kind of table; since classes/objects are tables,
-  -- check to see if the table has a tostring meta-method; if not, use the home-baked generic
-  -- table.tostring function
-  return Bool.ternary(
+---@private
+-- since classes/objects are tables, check to see if the table has a tostring
+-- meta-method; if not, use the home-baked generic table.tostring function
+function String.stringify_table(obj)
+  return Common.Bool.ternary(
     obj.__tostring == nil,
-    function() return Table.tostring(obj) end,
+    function() return Common.Table.tostring(obj) end,
     function() return tostring(obj) end
   )
 end
 
 
-local function do_pad(str, char, len, joiner)
+---@private
+function String.stringify_function(obj)
+  -- TODO: see seems pretty powerful; explore it a bit to see what more we can do w/ it
+  return 'function(?)'
+  -- return String.trim_after(tostring(see(obj)), ' {')
+end
+
+
+--- Converts arbitrary objects to human-readable strings.
+--
+---@param obj any|nil: the object to "stringify"
+---@return string: the stringified version of the provided object
+function String.tostring(obj)
+  if not TO_STR_NEEDS_SPC_HANDLING(obj) then
+    return tostring(obj)
+  end
+
+  local type = Type.of(obj)
+  local fn = String['stringify_' .. type]
+
+  if String.not_nil_or_empty(fn) then
+    return fn(obj)
+  end
+
+  error(String.fmt('String.tostring: type(obj) is unrecognized: %s', type))
+end
+
+
+local function do_pad(func, str, char, len, joiner)
+  validate_char(func, char)
+
   if len <= #str then
     return str
   end
@@ -385,7 +430,7 @@ end
 ---@param len integer: the desired length of the string to be returned
 ---@return string: str padded by char up to length len, or str if #str >= len
 function String.lpad(str, char, len)
-  return do_pad(str, char, len, function(pad)
+  return do_pad('lpad', str, char, len, function(pad)
     return pad .. str
   end)
 end
@@ -403,20 +448,15 @@ end
 ---@param len integer: the desired length of the string to be returned
 ---@return string: str padded by char up to length len, or str if #str >= len
 function String.rpad(str, char, len)
-  return do_pad(str, char, len, function(pad)
+  return do_pad('rpad', str, char, len, function(pad)
     return str ..  pad
   end)
 end
 
 
---- Wrapper around string.format, in case there's any desire to change the templating
---- mechanism in the future.
----
---- TODO: replace in all projects uses of string.format w/ this function.
----
----@see string.format
+---@see Common.String.fmt
 function String.fmt(base, ...)
-  return string.format(base, ...)
+  return Common.String.fmt(base, ...)
 end
 
 return String
