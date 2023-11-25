@@ -1,4 +1,3 @@
-
 local fmt = string.format
 
 local function nil_or_empty(string)
@@ -76,7 +75,14 @@ function Stringify.table(tbl, o, c, sep, seen)
     return o .. c
   end
 
-  return fmt('%s %s %s', o, arr_str or str, c)
+  if nil_or_empty(arr_str) and nil_or_empty(str) then
+    return (o == nil and c == nil) and '{}' or (o .. c)
+  end
+
+  o = o or '{ '
+  c = c or ' }'
+
+  return o .. (arr_str or str) .. c
 end
 
 
@@ -90,16 +96,16 @@ end
 
 --- Converts arbitrary objects to human-readable strings.
 ---
---- When obj is a table, recursively constructs a string representation the table using
+--- When obj is a table, recursively constructs a string representation of the table using
 --- the builtin tostring function on non-table constituents or on tables that are found to
 --- have a custom implementation of tostring.
 ---
 --- When object is a function, TODO.
 ---
 ---@param obj any|nil: the object to "stringify"
----@param o string|nil: optional, defaults to '{'; only used when stringifying tables; the
+---@param o string|nil: optional, defaults to '{ '; only used when stringifying tables; the
 --- opening brace of the string representation of a table
----@param c string|nil: optional, defaults to '}'; only used when stringifying tables; the
+---@param c string|nil: optional, defaults to ' }'; only used when stringifying tables; the
 --- closing brace of the string representation of a table
 ---@param sep string|nil: optional, defaults to ', '; only used when stringifying tables;
 --- separates elements in the string representation a table
