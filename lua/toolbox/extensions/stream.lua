@@ -17,9 +17,7 @@ Stream.__index = Stream
 ---@param array T[]?: an array-like table on which to preform stream operations
 ---@return Stream: a stream that wraps the provided array
 function Stream.new(array)
-  local this = { array = array or {} }
-  setmetatable(this, Stream)
-  return this
+  return setmetatable({ array = array or {}}, Stream)
 end
 
 
@@ -78,10 +76,10 @@ end
 --- Reduces the values of "this" stream according to the provided reducer function and
 --- initial value.
 ---
----@generic T
----@param reducer fun(l: T?, r: T): c: T: a function that reduces values of "this" stream
+---@generic S, T
+---@param reducer fun(l: S|nil, r: S): c: T: a function that reduces values of "this" stream
 --- to a single value
----@param init T?: the initial value to use for reduction
+---@param init T|nil: the initial value to use for reduction
 ---@return T: the values of "this" stream combined according to the provided reducer
 --- function and initial value
 function Stream:reduce(reducer, init)

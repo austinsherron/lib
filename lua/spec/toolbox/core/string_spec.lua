@@ -1,6 +1,8 @@
 local Common = require 'toolbox.core.__common'
 local String = require 'toolbox.core.string'
 
+local assert = require 'luassert.assert'
+
 
 describe('String', function()
   describe('.is(x)', function()
@@ -552,13 +554,10 @@ describe('String', function()
     end)
     it('should return base if no args are provided', function()
       assert.equals(
-        String.fmt('%s + %s %s in fact, equal %s'),
-        '%s + %s %s in fact, equal %s'
-      )
-      assert.equals(
         String.fmt("I'm a little teapot, short and stout"),
         "I'm a little teapot, short and stout"
       )
+      assert.has.error(function () String.fmt('%s + %s %s in fact, equal %s') end)
     end)
     it('should return base if base is the empty string, regardless of args provided', function()
       assert.equals(String.fmt('', nil, 25, false), '')

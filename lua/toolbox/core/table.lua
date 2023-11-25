@@ -1,5 +1,7 @@
 local Common = require 'toolbox.core.__common'
 
+local stringify = require 'toolbox.common.stringify'
+
 
 --- Contains functions for interacting w/ and manipulating tables, either array or
 --- dict-like.
@@ -277,9 +279,11 @@ function Table.shallow_copy(tbl)
 end
 
 
----@see Common.Table.tostring
+--- Converts arbitrary tables to human-readable strings.
+---
+---@see toolbox.common.stringify
 function Table.tostring(...)
-  return Common.Table.tostring(...)
+  return stringify(...)
 end
 
 
