@@ -6,7 +6,7 @@ local ternary = require('toolbox.core.bool').ternary
 
 
 --- A simple stack implementation whose instances are backed by tables.
---
+---
 ---@generic T
 ---@class Stack<T>
 ---@field private stack `T`[]: backing data structure
@@ -15,7 +15,7 @@ Stack.__index = Stack
 
 
 --- Constructor
---
+---
 ---@generic T
 ---@param ... T: initial items to push onto the stack
 ---@return Stack: a new instance
@@ -26,10 +26,10 @@ end
 
 
 --- Copy constructor
---
---  Note: this copy constructor performs "shallow" copies, meaning that complex/nested
---  objects are not truly copied (read: only their references are copied).
---
+---
+--- Note: this copy constructor performs "shallow" copies, meaning that complex/nested
+--- objects are not truly copied (read: only their references are copied).
+---
 ---@param o Stack: the stack to copy
 ---@return Stack: a new instance that is a shallow copy of o
 function Stack.copy(o)
@@ -38,7 +38,7 @@ end
 
 
 --- Returns the number of items in the stack.
---
+---
 ---@operator unm:Stack
 ---@return integer: the number of items in the stack
 function Stack:__len()
@@ -53,11 +53,11 @@ end
 
 
 --- Pushes an item onto the stack.
---
+---
 ---@generic T
 ---@param item T: the item to push onto the stack
 function Stack:push(item)
-  table.insert(self.stack, item)
+  Array.append(self.stack, item)
 end
 
 
@@ -101,7 +101,7 @@ end
 
 
 --- Pushes all provided items onto the stack.
---
+---
 ---@generic T
 ---@param ... T: the items to push onto the stack
 function Stack:pushall(...)
@@ -150,7 +150,7 @@ end
 
 
 --- Constructs and returns a string representation of the set.
---
+---
 ---@return string: a string representation of the set
 function Stack:__tostring()
   return Table.tostring(self.stack, 'stack(', ')')

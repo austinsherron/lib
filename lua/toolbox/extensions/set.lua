@@ -58,6 +58,14 @@ function Set.only(item)
 end
 
 
+--- Constructor for a set w/ no elements.
+---
+---@return Set: a new instance w/ no items
+function Set.empty()
+  return Set.new()
+end
+
+
 --- Copy constructor
 --
 --  Note: this copy constructor performs "shallow" copies, meaning that complex/nested
@@ -133,6 +141,12 @@ function Set:__eq(o)
     end
   end
 
+  for k, _ in pairs(o.items) do
+    if not self:contains(k) then
+      return false
+    end
+  end
+
   return true
 end
 
@@ -170,7 +184,7 @@ function Set:__sub(o)
 end
 
 
----Alias for Set:_add.
+---Alias for Set:__add.
 --
 ---@see Set.__add
 function Set:__concat(o)

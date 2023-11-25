@@ -2,6 +2,9 @@
 
 local Iter = require 'toolbox.extensions.iter'
 
+local assert = require 'luassert.assert'
+
+
 describe('Iter', function()
   describe('.iter(len)', function()
     it('should produce a function that can be called "len" times before returning "finishing"', function()

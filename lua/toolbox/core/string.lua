@@ -1,10 +1,10 @@
 local Common = require 'toolbox.core.__common'
 local Type   = require 'toolbox.meta.type'
 
+local stringify = require 'toolbox.common.stringify'
+
 -- local see = require 'see'
 
-
-local TO_STR_NEEDS_SPC_HANDLING = Type.oneof('table', 'function')
 
 --- TODO: create "Indexable" class that implements python-like indexing for strings
 ---       see `toolbox.core.string.Indexable`
@@ -360,43 +360,11 @@ function String.split_lines(str)
 end
 
 
----@private
--- since classes/objects are tables, check to see if the table has a tostring
--- meta-method; if not, use the home-baked generic table.tostring function
-function String.stringify_table(obj)
-  return Common.Bool.ternary(
-    obj.__tostring == nil,
-    function() return Common.Table.tostring(obj) end,
-    function() return tostring(obj) end
-  )
-end
-
-
----@private
-function String.stringify_function(obj)
-  -- TODO: see seems pretty powerful; explore it a bit to see what more we can do w/ it
-  return 'function(?)'
-  -- return String.trim_after(tostring(see(obj)), ' {')
-end
-
-
 --- Converts arbitrary objects to human-readable strings.
---
----@param obj any|nil: the object to "stringify"
----@return string: the stringified version of the provided object
-function String.tostring(obj)
-  if not TO_STR_NEEDS_SPC_HANDLING(obj) then
-    return tostring(obj)
-  end
-
-  local type = Type.of(obj)
-  local fn = String['stringify_' .. type]
-
-  if String.not_nil_or_empty(fn) then
-    return fn(obj)
-  end
-
-  error(String.fmt('String.tostring: type(obj) is unrecognized: %s', type))
+---
+---@see toolbox.common.stringify
+function String.tostring(...)
+  return stringify(...)
 end
 
 

@@ -1,5 +1,7 @@
 local DefaultDict = require 'toolbox.extensions.defaultdict'
 
+local assert = require 'luassert.assert'
+
 
 describe('DefaultDict', function()
   describe('.__index(k)', function()
