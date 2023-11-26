@@ -1,0 +1,120 @@
+-- local Bool   = require 'toolbox.core.bool'
+-- local String = require 'toolbox.core.string'
+-- local Table  = require 'toolbox.core.table'
+-- local Set    = require 'toolbox.extensions.set'
+--
+-- local ternary = require('toolbox.core.bool').ternary
+--
+--
+-- --- Used to represent a single entry in an enum
+-- ---
+-- ---@generic T
+-- ---@class Entry<T>
+-- ---@field private value V
+-- local Entry = {}
+-- Entry.__index = Entry
+--
+-- --- Constructor
+-- ---
+-- ---@generic T
+-- ---@param value T: the enum entry's true value
+-- function Entry.new(value)
+--   return setmetatable({ value = value }, Entry)
+-- end
+--
+--
+-- local function maybe_entry_value(o)
+--   return ternary(
+--     getmetatable(o) == Entry,
+--     function() return o.value end,
+--     o
+--   )
+-- end
+--
+--
+-- function Entry:__eq(o)
+--   return self.value == maybe_entry_value(o)
+-- end
+--
+--
+-- function Entry:__lt(o)
+--   return self.value < maybe_entry_value(o)
+-- end
+--
+--
+-- function Entry:__le(o)
+--   return self.value <= maybe_entry_value(o)
+-- end
+--
+--
+-- function Entry:__tostring()
+--   return String.tostring(self.value)
+-- end
+--
+-- -- Enum ------------------------------------------------------------------------
+--
+-- --- Used to represent a Java-like enum.
+-- ---
+-- ---@generic K, V
+-- ---@class Enum<K, V>
+-- ---@field name string
+-- ---@field entries { [`K`]: Entry }
+-- ---@field default_entry Entry|nil:
+-- local Enum = {}
+-- Enum.__index = Enum
+--
+-- --- Constructor
+-- ---
+-- ---@generic T
+-- ---@param name string:
+-- ---@param entries T[]:
+-- ---@param default_entry T|nil:
+-- ---@return Enum
+-- function Enum.new(name, entries, default_entry)
+--   entries = Table.map_items(entries, { vals =  Entry.new })
+--   local by_values = Table.to_dict(Table.values(entries), )
+--
+--   local this = {
+--     name          = name,
+--     entries       = entries,
+--     by_values     =
+--     default_entry = ternary(default_entry ~= nil, Entry.new(default_entry)),
+--   }
+--   return setmetatable(this)
+-- end
+--
+--
+-- --- Checks if the provided value is part of the enum set.
+-- ---
+-- ---@generic T
+-- ---@param val T: the value to check
+-- ---@return boolean: true if the provided value is part of the enum set, false otherwise
+-- function Enum:is_valid(val)
+--   return self.all:contains(val)
+-- end
+--
+--
+-- ---
+-- ---@return
+-- function Enum:default()
+--   return self.default_entry
+-- end
+--
+--
+-- ---
+-- ---@param this
+-- ---@param key
+-- ---@return
+-- function Enum:orDefault(this, key)
+--   return ternary(this:is_valid(key), key, this.default_entry)
+-- end
+--
+-- ---
+-- ---
+-- ---@param entry
+-- function Enum:__index(entry)
+--   if
+-- end
+--
+-- return Enum
+--
