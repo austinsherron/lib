@@ -12,7 +12,8 @@ local Error = {}
 --- using it to raise an error.
 ---
 ---@param base_msg string: the base msg w/ which to raise an error
----@param ... any|nil: value to stringify and format into base_msg
+---@param ... any|nil: values to stringify and format into base_msg
+---@error an error w/ a message formatted from the provided string and tokens
 function Error.raise(base_msg, ...)
   local args = Stream(Table.pack(...))
     :map(String.tostring)
