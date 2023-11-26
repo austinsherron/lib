@@ -7,11 +7,9 @@ local Lambda = {}
 
 ---@note: a function that does nothing and returns no value (nil)
 Lambda.NOOP = function() end
----@note: a function that differs from LAMBDA.NOOP only because it explicitly returns nil
-Lambda.NIL = function() return nil end
 ---@note: a function that returns true
-Lambda.TRUE = function() return false end
----@note: a function that returns true
+Lambda.TRUE = function() return true end
+---@note: a function that returns false
 Lambda.FALSE = function() return false end
 ---@note: a function that returns its first argument
 Lambda.IDENTITY = function(val) return val end

@@ -1,0 +1,14 @@
+list:
+  - "one"
+  - "two"
+  - "three"
+  - "four"
+string: "a simple string"
+number: 24
+boolean_t: true
+boolean_f: false
+map:
+  a: 1
+  b: 2
+  c: 3
+
