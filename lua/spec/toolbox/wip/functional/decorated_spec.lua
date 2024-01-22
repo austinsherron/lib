@@ -1,13 +1,14 @@
-local Table     = require 'toolbox.core.table'
 local Decorated = require 'toolbox.functional.decorated'
+local Table = require 'toolbox.core.table'
 
 local assert = require 'luassert.assert'
-
 
 describe('Decorated', function()
   describe('.new(fn)', function()
     it('should apply the decorator to singleton functions', function()
-      local Add = Decorated.new(function(num) return num + 2 end);
+      local Add = Decorated.new(function(num)
+        return num + 2
+      end)
 
       function Add.five(num)
         return num + 5
@@ -25,7 +26,9 @@ describe('Decorated', function()
     it('should apply the decorator to instance methods', function()
       ---@class Adder
       ---@field __num number
-      local Adder = Decorated.new(function(num) return num + 5 end);
+      local Adder = Decorated.new(function(num)
+        return num + 5
+      end)
       Adder.__index = Adder
 
       function Adder.new(num)
@@ -46,4 +49,3 @@ describe('Decorated', function()
     end)
   end)
 end)
-

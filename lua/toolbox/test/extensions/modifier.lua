@@ -4,7 +4,6 @@ local assert = require 'luassert.assert'
 
 local fmt = TestUtils.fmt
 
-
 --- Defines an assertion modifier for use w/ luassert in lua unit tests.
 ---
 ---@class AssertModifier
@@ -25,7 +24,6 @@ local function make_base(name, state_key)
   end
 end
 
-
 --- Constructor
 ---
 ---@param name string: the name of the modifier
@@ -35,13 +33,12 @@ end
 ---@param handler table: implements assertion logic for the modifier
 function AssertModifier.new(name, state_key, handler)
   return setmetatable({
-    base      = make_base(name, state_key),
-    handler   = handler,
-    name      = name,
+    base = make_base(name, state_key),
+    handler = handler,
+    name = name,
     state_key = state_key,
   }, AssertModifier)
 end
-
 
 --- Gets the state associated w/ this assert modifier.
 ---
@@ -52,11 +49,9 @@ function AssertModifier:get_state(state)
   return rawget(state, self.state_key)
 end
 
-
 --- Registers the modifier w/ luassert.
 function AssertModifier:register()
   assert:register('modifier', self.name, self.base)
 end
 
 return AssertModifier
-

@@ -4,7 +4,6 @@ local assert = require 'luassert.assert'
 
 require 'toolbox.test.extensions'
 
-
 describe('stack assert modifier', function()
   describe('contains', function()
     it('should succeed if the stack contains all provided values', function()
@@ -77,7 +76,7 @@ describe('stack assert modifier', function()
       assert.stack(Stack.new(1, 2)).is_not.empty()
       assert.stack(Stack.new(1, 2, 3)).is_not.empty()
     end)
-    it("should fail when negated if the stack is empty", function()
+    it('should fail when negated if the stack is empty', function()
       assert.has.error(function()
         assert.stack(Stack.new()).is_not.empty()
       end)
@@ -184,7 +183,7 @@ describe('stack assert modifier', function()
       assert.stack(Stack.new(1, 2)).Not.length(1)
       assert.stack(Stack.new(1, 2, 3)).Not.length(6)
     end)
-    it("should fail when negated if the stack does have the asserted length", function()
+    it('should fail when negated if the stack does have the asserted length', function()
       assert.has.error(function()
         assert.stack(Stack.new(1)).Not.length(1)
       end)
@@ -197,4 +196,3 @@ describe('stack assert modifier', function()
     end)
   end)
 end)
-

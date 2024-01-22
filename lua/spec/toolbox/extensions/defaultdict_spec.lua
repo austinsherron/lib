@@ -2,11 +2,12 @@ local DefaultDict = require 'toolbox.extensions.defaultdict'
 
 local assert = require 'luassert.assert'
 
-
 describe('DefaultDict', function()
   describe('.__index(k)', function()
     it('returns a values that exist in the dict', function()
-      local defaulter = spy.new(function(_) return 0 end)
+      local defaulter = spy.new(function(_)
+        return 0
+      end)
       local dd = DefaultDict.new(defaulter)
 
       dd.a = 1
@@ -17,7 +18,9 @@ describe('DefaultDict', function()
       assert.spy(defaulter).Not.was_called()
     end)
     it('defaults and returns values that do not exist in the dict', function()
-      local defaulter = spy.new(function(_) return 0 end)
+      local defaulter = spy.new(function(_)
+        return 0
+      end)
       local dd = DefaultDict.new(defaulter)
 
       dd.a = 1
@@ -32,4 +35,3 @@ describe('DefaultDict', function()
     end)
   end)
 end)
-

@@ -6,7 +6,6 @@ local assert = require 'luassert.assert'
 
 require 'toolbox.test.extensions'
 
-
 describe('Stack', function()
   describe('.new(...)', function()
     it('should create a new stack w/ the provided items', function()
@@ -184,7 +183,7 @@ describe('Stack', function()
       assert.True(Stack.new(1) == Stack.new(1))
       assert.True(Stack.new(1, 2) == Stack.new(1, 2))
 
-      assert.True(Stack.new('a') == Stack.new('a'))
+      assert.True(Stack.new 'a' == Stack.new 'a')
       assert.True(Stack.new('a', 'b') == Stack.new('a', 'b'))
     end)
     it('should return false when the stacks are unequal', function()
@@ -231,4 +230,3 @@ describe('Stack', function()
     end)
   end)
 end)
-

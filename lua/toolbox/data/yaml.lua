@@ -1,6 +1,5 @@
 local yaml = require 'yaml'
 
-
 --- Contains utility functions for interacting w/ and manipulating yaml.
 ---
 ---@class Yaml
@@ -14,7 +13,6 @@ function Yaml.from_file(path)
   return yaml.loadpath(path)
 end
 
-
 --- Creates a yaml string from the provided lua table.
 ---
 ---@param tbl table: the table to convert to a yaml string
@@ -24,4 +22,3 @@ function Yaml.encode(tbl)
 end
 
 return Yaml
-

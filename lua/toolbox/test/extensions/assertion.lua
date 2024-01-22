@@ -1,15 +1,14 @@
-local TestUtils      = require 'toolbox.test.utils'
-local Modifiers      = require 'toolbox.test.extensions.modifiers'
+local Modifiers = require 'toolbox.test.extensions.modifiers'
+local TestUtils = require 'toolbox.test.utils'
 
 local assert = require 'luassert.assert'
-local say    = require 'say'
+local say = require 'say'
 
-local concat           = TestUtils.concat
-local fmt              = TestUtils.fmt
+local concat = TestUtils.concat
+local fmt = TestUtils.fmt
 local not_nil_or_empty = TestUtils.not_nil_or_empty
-local pack             = TestUtils.pack
-local unpack           = TestUtils.unpack
-
+local pack = TestUtils.pack
+local unpack = TestUtils.unpack
 
 ---@alias AssertMsgType 'positive' | 'negative'
 ---@alias AssertionMsgs { [AssertMsgType]: string|nil }
@@ -32,12 +31,11 @@ Assertion.__index = Assertion
 ---@return Assertion: a new instance
 function Assertion.new(name, msgs, aliases)
   return setmetatable({
-    name    = name,
-    msgs    = msgs or {},
+    name = name,
+    msgs = msgs or {},
     aliases = aliases or {},
   }, Assertion)
 end
-
 
 --- Adds a "positive" failure message to the assertion.
 ---
@@ -48,7 +46,6 @@ function Assertion:with_positive(msg)
   return self
 end
 
-
 --- Adds a "negative" failure message to the assertion.
 ---
 ---@param msg string: the message
@@ -57,7 +54,6 @@ function Assertion:with_negative(msg)
   self.msgs.negative = msg
   return self
 end
-
 
 --- Adds on or more aliases to the assertion.
 ---
@@ -73,19 +69,14 @@ function Assertion:with_alias(...)
   return self
 end
 
-
 ---@private
 function Assertion:msg_fqn(type)
   return fmt('assertion.%s.%s', self.name, type)
 end
 
-
 ---@private
 function Assertion:register_msgs()
-  assert(
-    not_nil_or_empty(self.msgs),
-    'msgs must contain at least one type of assertion messaage'
-  )
+  assert(not_nil_or_empty(self.msgs), 'msgs must contain at least one type of assertion messaage')
 
   local fqns = {}
 
@@ -98,7 +89,6 @@ function Assertion:register_msgs()
   return fqns
 end
 
-
 local function get_mod_state(state)
   for _, mod in pairs(Modifiers) do
     local mod_state = mod:get_state(state)
@@ -109,21 +99,16 @@ local function get_mod_state(state)
   end
 end
 
-
 ---@private
 function Assertion:make_assertion()
   return function(state, args, _)
     local mod_state, mod = get_mod_state(state)
 
-    assert(
-      mod.handler[self.name] ~= nil,
-      fmt("The %s handler doesn't implement the %s assertion", mod.name, self.name)
-    )
+    assert(mod.handler[self.name] ~= nil, fmt("The %s handler doesn't implement the %s assertion", mod.name, self.name))
 
     return mod.handler[self.name](mod_state, args)
   end
 end
-
 
 ---@private
 function Assertion:get_names()
@@ -136,7 +121,6 @@ function Assertion:get_names()
   return names
 end
 
-
 --- Registers the assertion w/ luassert under its name and aliases.
 function Assertion:register()
   local fqns = self:register_msgs()
@@ -148,4 +132,3 @@ function Assertion:register()
 end
 
 return Assertion
-

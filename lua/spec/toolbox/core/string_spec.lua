@@ -3,14 +3,13 @@ local String = require 'toolbox.core.string'
 
 local assert = require 'luassert.assert'
 
-
 describe('String', function()
   describe('.is(x)', function()
     it('should return true if x is a string', function()
-      assert.True(String.is('1'))
-      assert.True(String.is('a number'))
-      assert.True(String.is(''))
-      assert.True(String.is('  '))
+      assert.True(String.is '1')
+      assert.True(String.is 'a number')
+      assert.True(String.is '')
+      assert.True(String.is '  ')
     end)
     it('should return false if x is not a number', function()
       assert.False(String.is(true))
@@ -31,35 +30,35 @@ describe('String', function()
 
   describe('.nil_or_empty(str)', function()
     it('should return true if str is empty', function()
-      assert.True(String.nil_or_empty(''))
+      assert.True(String.nil_or_empty '')
     end)
     it('should return true if str is nil', function()
       assert.True(String.nil_or_empty(nil))
     end)
     it('should return false if str is not nil nor empty', function()
-      assert.False(String.nil_or_empty(' hello '))
-      assert.False(String.nil_or_empty('    '))
-      assert.False(String.nil_or_empty('\n'))
-      assert.False(String.nil_or_empty('\t'))
-      assert.False(String.nil_or_empty('\r'))
-      assert.False(String.nil_or_empty('11130  80!#%'))
+      assert.False(String.nil_or_empty ' hello ')
+      assert.False(String.nil_or_empty '    ')
+      assert.False(String.nil_or_empty '\n')
+      assert.False(String.nil_or_empty '\t')
+      assert.False(String.nil_or_empty '\r')
+      assert.False(String.nil_or_empty '11130  80!#%')
     end)
   end)
 
   describe('.not_nil_or_empty(str)', function()
     it('should return false if str is empty', function()
-      assert.False(String.not_nil_or_empty(''))
+      assert.False(String.not_nil_or_empty '')
     end)
     it('should return false if str is nil', function()
       assert.False(String.not_nil_or_empty(nil))
     end)
     it('should return true if str is not nil nor empty', function()
-      assert.True(String.not_nil_or_empty(' hello '))
-      assert.True(String.not_nil_or_empty('    '))
-      assert.True(String.not_nil_or_empty('\n'))
-      assert.True(String.not_nil_or_empty('\t'))
-      assert.True(String.not_nil_or_empty('\r'))
-      assert.True(String.not_nil_or_empty('11130  80!#%'))
+      assert.True(String.not_nil_or_empty ' hello ')
+      assert.True(String.not_nil_or_empty '    ')
+      assert.True(String.not_nil_or_empty '\n')
+      assert.True(String.not_nil_or_empty '\t')
+      assert.True(String.not_nil_or_empty '\r')
+      assert.True(String.not_nil_or_empty '11130  80!#%')
     end)
   end)
 
@@ -87,16 +86,16 @@ describe('String', function()
   describe('.capitalize(str)', function()
     describe('regularize ==  true', function()
       it('should capitalize the string regardless of capitalization', function()
-        assert.equals(String.capitalize('sOmeTHing'), 'Something')
-        assert.equals(String.capitalize('SOmeThINg'), 'Something')
-        assert.equals(String.capitalize('something'), 'Something')
-        assert.equals(String.capitalize('SOMETHING'), 'Something')
+        assert.equals(String.capitalize 'sOmeTHing', 'Something')
+        assert.equals(String.capitalize 'SOmeThINg', 'Something')
+        assert.equals(String.capitalize 'something', 'Something')
+        assert.equals(String.capitalize 'SOMETHING', 'Something')
 
-        assert.equals(String.capitalize('hello there lovely'), 'Hello there lovely')
-        assert.equals(String.capitalize('Hello There Lovely'), 'Hello there lovely')
+        assert.equals(String.capitalize 'hello there lovely', 'Hello there lovely')
+        assert.equals(String.capitalize 'Hello There Lovely', 'Hello there lovely')
       end)
       it('should do nothing to the empty string', function()
-        assert.equals(String.capitalize(''), '')
+        assert.equals(String.capitalize '', '')
       end)
     end)
     describe('regularize ==  false', function()
@@ -110,38 +109,38 @@ describe('String', function()
         assert.equals(String.capitalize('Hello There Lovely', false), 'Hello There Lovely')
       end)
       it('should do nothing to the empty string', function()
-        assert.equals(String.capitalize(''), '')
+        assert.equals(String.capitalize '', '')
       end)
     end)
   end)
 
   describe('.lower(str)', function()
     it('should lowercase str regardless of existing case', function()
-      assert.equals(String.lower('sOmeTHing'), 'something')
-      assert.equals(String.lower('SOmeThINg'), 'something')
-      assert.equals(String.lower('something'), 'something')
-      assert.equals(String.lower('SOMETHING'), 'something')
+      assert.equals(String.lower 'sOmeTHing', 'something')
+      assert.equals(String.lower 'SOmeThINg', 'something')
+      assert.equals(String.lower 'something', 'something')
+      assert.equals(String.lower 'SOMETHING', 'something')
 
-      assert.equals(String.lower('hello there lovely'), 'hello there lovely')
-      assert.equals(String.lower('Hello There Lovely'), 'hello there lovely')
+      assert.equals(String.lower 'hello there lovely', 'hello there lovely')
+      assert.equals(String.lower 'Hello There Lovely', 'hello there lovely')
     end)
     it('should do nothing to the empty string', function()
-      assert.equals(String.lower(''), '')
+      assert.equals(String.lower '', '')
     end)
   end)
 
   describe('.upper(str)', function()
     it('should uppercase str regardless of existing case', function()
-      assert.equals(String.upper('sOmeTHing'), 'SOMETHING')
-      assert.equals(String.upper('SOmeThINg'), 'SOMETHING')
-      assert.equals(String.upper('something'), 'SOMETHING')
-      assert.equals(String.upper('SOMETHING'), 'SOMETHING')
+      assert.equals(String.upper 'sOmeTHing', 'SOMETHING')
+      assert.equals(String.upper 'SOmeThINg', 'SOMETHING')
+      assert.equals(String.upper 'something', 'SOMETHING')
+      assert.equals(String.upper 'SOMETHING', 'SOMETHING')
 
-      assert.equals(String.upper('hello there lovely'), 'HELLO THERE LOVELY')
-      assert.equals(String.upper('Hello There Lovely'), 'HELLO THERE LOVELY')
+      assert.equals(String.upper 'hello there lovely', 'HELLO THERE LOVELY')
+      assert.equals(String.upper 'Hello There Lovely', 'HELLO THERE LOVELY')
     end)
     it('should do nothing to the empty string', function()
-      assert.equals(String.upper(''), '')
+      assert.equals(String.upper '', '')
     end)
   end)
 
@@ -221,19 +220,19 @@ describe('String', function()
 
   describe('.firstword(str)', function()
     it('should return the first whitespace delimited word from str', function()
-      assert.equals(String.firstword('how do bugaboo?'), 'how')
-      assert.equals(String.firstword("  pretty swell how 'bout you?"), 'pretty')
-      assert.equals(String.firstword('wait\t\t you can talk?'), 'wait')
-      assert.equals(String.firstword('  I\n\t\t can at that'), 'I')
+      assert.equals(String.firstword 'how do bugaboo?', 'how')
+      assert.equals(String.firstword "  pretty swell how 'bout you?", 'pretty')
+      assert.equals(String.firstword 'wait\t\t you can talk?', 'wait')
+      assert.equals(String.firstword '  I\n\t\t can at that', 'I')
     end)
     it('should return the first whitespace delimited word from a single word str', function()
-      assert.equals(String.firstword('bugaboo?'), 'bugaboo?')
-      assert.equals(String.firstword('bugaboo'), 'bugaboo')
-      assert.equals(String.firstword('   bugaboo   '), 'bugaboo')
-      assert.equals(String.firstword('   \n\tbugaboo   \t\n'), 'bugaboo')
+      assert.equals(String.firstword 'bugaboo?', 'bugaboo?')
+      assert.equals(String.firstword 'bugaboo', 'bugaboo')
+      assert.equals(String.firstword '   bugaboo   ', 'bugaboo')
+      assert.equals(String.firstword '   \n\tbugaboo   \t\n', 'bugaboo')
     end)
     it('should return nil if str is empty', function()
-      assert.Nil(String.firstword(''))
+      assert.Nil(String.firstword '')
     end)
   end)
 
@@ -323,7 +322,9 @@ describe('String', function()
       assert.equals(String.trim_before('oh, hello.', 'z'), 'oh, hello.')
     end)
     it('should raise an error if #delim > 1', function()
-      assert.has_error(function() String.trim_before('oh, hello.', 'hel') end)
+      assert.has_error(function()
+        String.trim_before('oh, hello.', 'hel')
+      end)
     end)
   end)
 
@@ -346,7 +347,9 @@ describe('String', function()
       assert.equals(String.trim_after('oh, hello.', 'z'), 'oh, hello.')
     end)
     it('should raise an error if #delim > 1', function()
-      assert.has_error(function() String.trim_after('oh, hello.', 'hel') end)
+      assert.has_error(function()
+        String.trim_after('oh, hello.', 'hel')
+      end)
     end)
   end)
 
@@ -374,7 +377,13 @@ describe('String', function()
     end)
     it('should recursively, w/ arbitrary nesting, construct a string from the arguments', function()
       local str = String.rjoin(
-        { 'join', { 'and', 'these', { 'and', 'these', 'sub', { 'more', 'sub' }, 'sub' }, 'subparts' }, 'these', { 'less', 'sub' }, 'parts' },
+        {
+          'join',
+          { 'and', 'these', { 'and', 'these', 'sub', { 'more', 'sub' }, 'sub' }, 'subparts' },
+          'these',
+          { 'less', 'sub' },
+          'parts',
+        },
         { ' ', ',' },
         { '', '(', '{' },
         { '', ')', '}' }
@@ -385,66 +394,50 @@ describe('String', function()
 
   describe('.split(str, sep)', function()
     it('should return an array of strings split on sep', function()
-      assert.True(Common.Array.equals(
-        String.split('helloxxxtherexxxbeautiful', 'xxx'),
-        { 'hello', 'there', 'beautiful' }
-      ))
-      assert.True(Common.Array.equals(
-        String.split('helloxxxtherexxxbeautiful', 'x'),
-        { 'hello', 'there', 'beautiful' }
-      ))
-      assert.True(Common.Array.equals(
-        String.split('hello there   beautiful', ' '),
-        { 'hello', 'there', 'beautiful' }
-      ))
+      assert.True(
+        Common.Array.equals(String.split('helloxxxtherexxxbeautiful', 'xxx'), { 'hello', 'there', 'beautiful' })
+      )
+      assert.True(
+        Common.Array.equals(String.split('helloxxxtherexxxbeautiful', 'x'), { 'hello', 'there', 'beautiful' })
+      )
+      assert.True(Common.Array.equals(String.split('hello there   beautiful', ' '), { 'hello', 'there', 'beautiful' }))
     end)
     it('should return an array of strings split on sep if sep occurs on either end', function()
-      assert.True(Common.Array.equals(
-        String.split('xhelloxxxtherexxxbeautifulx', 'x'),
-        { 'hello', 'there', 'beautiful' }
-      ))
-      assert.True(Common.Array.equals(
-        String.split(' hello   there   beautiful   ', ' '),
-        { 'hello', 'there', 'beautiful' }
-      ))
+      assert.True(
+        Common.Array.equals(String.split('xhelloxxxtherexxxbeautifulx', 'x'), { 'hello', 'there', 'beautiful' })
+      )
+      assert.True(
+        Common.Array.equals(String.split(' hello   there   beautiful   ', ' '), { 'hello', 'there', 'beautiful' })
+      )
     end)
     it("should do nothing if sep doesn't occur in str", function()
-      assert.True(Common.Array.equals(
-        String.split('xhelloxxxtherexxxbeautifulx', ' '),
-        { 'xhelloxxxtherexxxbeautifulx' }
-      ))
-      assert.True(Common.Array.equals(
-        String.split(' hello   there   beautiful ', 'x'),
-        { ' hello   there   beautiful ' }
-      ))
+      assert.True(
+        Common.Array.equals(String.split('xhelloxxxtherexxxbeautifulx', ' '), { 'xhelloxxxtherexxxbeautifulx' })
+      )
+      assert.True(
+        Common.Array.equals(String.split(' hello   there   beautiful ', 'x'), { ' hello   there   beautiful ' })
+      )
     end)
   end)
 
   describe('.split_lines(str)', function()
     it('should return an array of strings split on newlines', function()
-      assert.True(Common.Array.equals(
-        String.split_lines('hello\nthere\nbeautiful'),
-        { 'hello', 'there', 'beautiful' }
-      ))
+      assert.True(Common.Array.equals(String.split_lines 'hello\nthere\nbeautiful', { 'hello', 'there', 'beautiful' }))
     end)
     it('should return an array of strings split on sep if newlines occur on either end', function()
-      assert.True(Common.Array.equals(
-        String.split_lines('\nhello\nthere\nbeautiful\n'),
-        { 'hello', 'there', 'beautiful' }
-      ))
+      assert.True(
+        Common.Array.equals(String.split_lines '\nhello\nthere\nbeautiful\n', { 'hello', 'there', 'beautiful' })
+      )
     end)
     it("should do nothing if newlines don't occur in str", function()
-      assert.True(Common.Array.equals(
-        String.split_lines('hello there beautiful'),
-        { 'hello there beautiful' }
-      ))
+      assert.True(Common.Array.equals(String.split_lines 'hello there beautiful', { 'hello there beautiful' }))
     end)
   end)
 
   describe('.tostring(obj)', function()
     it('should stringify abritrary simple objects', function()
-      assert.equals(String.tostring('obj'), 'obj')
-      assert.equals(String.tostring('something something String.tostring'), 'something something String.tostring')
+      assert.equals(String.tostring 'obj', 'obj')
+      assert.equals(String.tostring 'something something String.tostring', 'something something String.tostring')
       assert.equals(String.tostring(1), '1')
       assert.equals(String.tostring(-1), '-1')
       assert.equals(String.tostring(3.14), '3.14')
@@ -474,8 +467,14 @@ describe('String', function()
     it('should stringify complex tables', function()
       -- FIXME: this doesn't work the way it should
       -- assert.equals(String.tostring({ nil, { nil }}), '{ }')
-      assert.equals(String.tostring({ 1, 2, { 3, 4, 5, { 6, 7, 8, { 9 }, 10 }, 11 }}), '{ 1, 2, { 3, 4, 5, { 6, 7, 8, { 9 }, 10 }, 11 } }')
-      assert.equals(String.tostring({ b = { [2] = { z = { 'a', 1, 3, 2 }}}}), '{ b = { 2 = { z = { a, 1, 3, 2 } } } }')
+      assert.equals(
+        String.tostring({ 1, 2, { 3, 4, 5, { 6, 7, 8, { 9 }, 10 }, 11 } }),
+        '{ 1, 2, { 3, 4, 5, { 6, 7, 8, { 9 }, 10 }, 11 } }'
+      )
+      assert.equals(
+        String.tostring({ b = { [2] = { z = { 'a', 1, 3, 2 } } } }),
+        '{ b = { 2 = { z = { a, 1, 3, 2 } } } }'
+      )
     end)
   end)
 
@@ -498,11 +497,17 @@ describe('String', function()
       assert.equals(String.lpad('a str', 'x', -1), 'a str')
     end)
     it('should raise an error if char is > 1', function()
-      assert.has_error(function() String.lpad('a str', 'xx', 10) end)
-      assert.has_error(function() String.lpad('a str', 'xxx', 10) end)
+      assert.has_error(function()
+        String.lpad('a str', 'xx', 10)
+      end)
+      assert.has_error(function()
+        String.lpad('a str', 'xxx', 10)
+      end)
     end)
     it('should raise an error if char the empty string', function()
-      assert.has_error(function() String.lpad('a str', '', 10) end)
+      assert.has_error(function()
+        String.lpad('a str', '', 10)
+      end)
     end)
   end)
 
@@ -525,11 +530,17 @@ describe('String', function()
       assert.equals(String.rpad('a str', 'x', -1), 'a str')
     end)
     it('should raise an error if char is > 1', function()
-      assert.has_error(function() String.rpad('a str', 'xx', 10) end)
-      assert.has_error(function() String.rpad('a str', 'xxx', 10) end)
+      assert.has_error(function()
+        String.rpad('a str', 'xx', 10)
+      end)
+      assert.has_error(function()
+        String.rpad('a str', 'xxx', 10)
+      end)
     end)
     it('should raise an error if char the empty string', function()
-      assert.has_error(function() String.rpad('a str', '', 10) end)
+      assert.has_error(function()
+        String.rpad('a str', '', 10)
+      end)
     end)
   end)
 
@@ -543,25 +554,18 @@ describe('String', function()
         String.fmt('hello there %s, %s to see you!', 'Massandra', 'awful'),
         'hello there Massandra, awful to see you!'
       )
-      assert.equals(
-        String.fmt('%s + %s %s in fact, equal %s', 3, 3, 'does', 4),
-        '3 + 3 does in fact, equal 4'
-      )
-      assert.equals(
-        String.fmt('%s + %s %s in fact, equal %s', 3, 3, 'does not', 6),
-        '3 + 3 does not in fact, equal 6'
-      )
+      assert.equals(String.fmt('%s + %s %s in fact, equal %s', 3, 3, 'does', 4), '3 + 3 does in fact, equal 4')
+      assert.equals(String.fmt('%s + %s %s in fact, equal %s', 3, 3, 'does not', 6), '3 + 3 does not in fact, equal 6')
     end)
     it('should return base if no args are provided', function()
-      assert.equals(
-        String.fmt("I'm a little teapot, short and stout"),
-        "I'm a little teapot, short and stout"
-      )
-      assert.has.error(function () String.fmt('%s + %s %s in fact, equal %s') end)
+      assert.equals(String.fmt "I'm a little teapot, short and stout", "I'm a little teapot, short and stout")
+      assert.has.error(function()
+        String.fmt '%s + %s %s in fact, equal %s'
+      end)
     end)
     it('should return base if base is the empty string, regardless of args provided', function()
       assert.equals(String.fmt('', nil, 25, false), '')
-      assert.equals(String.fmt(''), '')
+      assert.equals(String.fmt '', '')
     end)
   end)
 end)

@@ -1,3 +1,4 @@
+local Iter = require 'toolbox.utils.iter'
 
 --- A class that attempts to implement the semantics of Python's "defaultdict".
 ---
@@ -15,10 +16,9 @@ DefaultDict.__index = DefaultDict
 function DefaultDict.new(defaulter)
   return setmetatable({
     defaulter = defaulter,
-    table     = {},
+    table = {},
   }, DefaultDict)
 end
-
 
 --- Returns the value in the table that maps to k. If one isn't present, it uses the
 --- defaulter function to initialize the value at k before returning it.
@@ -28,12 +28,15 @@ end
 ---@return T: the value that maps to k, or the return value of defaulter if there's no
 --- value that maps to k
 function DefaultDict:__index(k)
-  if self.table[k] == nil then
+  if rawget(self.table, k) == nil then
     self.table[k] = self.defaulter()
   end
 
-  return self.table[k]
+  return rawget(self.table, k)
+end
+
+function DefaultDict:__pairs()
+  return Iter.dict(self.table), self.table, nil
 end
 
 return DefaultDict
-

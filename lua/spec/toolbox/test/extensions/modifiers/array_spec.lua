@@ -2,7 +2,6 @@ local assert = require 'luassert.assert'
 
 require 'toolbox.test.extensions'
 
-
 describe('array assert modifier', function()
   describe('contains', function()
     it('should succeed if the array contains all provided values', function()
@@ -75,7 +74,7 @@ describe('array assert modifier', function()
       assert.array({ 1, 2 }).is_not.empty()
       assert.array({ 1, 2, 3 }).is_not.empty()
     end)
-    it("should fail when negated if the array is empty", function()
+    it('should fail when negated if the array is empty', function()
       assert.has.error(function()
         assert.array({}).is_not.empty()
       end)
@@ -104,7 +103,7 @@ describe('array assert modifier', function()
       assert.array({ 1, 2 }).Not.length(1)
       assert.array({ 1, 2, 3 }).Not.length(6)
     end)
-    it("should fail when negated if the array does have the asserted length", function()
+    it('should fail when negated if the array does have the asserted length', function()
       assert.has.error(function()
         assert.array({ 1 }).Not.length(1)
       end)
@@ -117,4 +116,3 @@ describe('array assert modifier', function()
     end)
   end)
 end)
-

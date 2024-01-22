@@ -1,6 +1,5 @@
 local Decorator = require 'toolbox.functional.decorator'
 
-
 --- Utility that ensures that functions/methods created on a "decorated" object are
 --- decorated w/ a function.
 ---
@@ -19,17 +18,15 @@ Decorated.__index = Decorated
 function Decorated.new(fn)
   local this = {
     decorator = Decorator.new(fn),
-    instance  = {},
+    instance = {},
   }
   return setmetatable(this, Decorated)
 end
-
 
 function Decorated:__index(k)
   return rawget(rawget(self, 'instance'), k)
   -- return self.instance[k]
 end
-
 
 function Decorated:__newindex(k, v)
   if type(v) == 'function' then
@@ -41,4 +38,3 @@ function Decorated:__newindex(k, v)
 end
 
 return Decorated
-

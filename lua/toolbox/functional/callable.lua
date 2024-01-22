@@ -1,6 +1,5 @@
 local Introspect = require 'toolbox.meta.introspect'
 
-
 --- A class whose instances can be either values or functions.
 ---
 ---@class Callable<T>
@@ -17,14 +16,12 @@ function Callable.new(val)
   return setmetatable({ val = val }, Callable)
 end
 
-
 --- Constructor for a callable that returns nil.
 ---
 ---@return Callable: a new instances that simply returns nil
 function Callable.empty()
   return setmetatable({ val = nil }, Callable)
 end
-
 
 --- Enables calling instances as functions. This method returns either the value w/ which
 --- the instance was constructed, or the return value of the function w/ which it was
@@ -41,4 +38,3 @@ function Callable:__call()
 end
 
 return Callable
-

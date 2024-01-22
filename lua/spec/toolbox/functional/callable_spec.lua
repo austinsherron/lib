@@ -4,14 +4,13 @@ local assert = require 'luassert.assert'
 
 require 'toolbox.test.extensions'
 
-
 describe('Callable', function()
   describe('.new(val)', function()
     it('should work with a non-callable value', function()
       local callable = Callable.new(1)
       assert.equals(callable(), 1)
 
-      callable = Callable.new('a')
+      callable = Callable.new 'a'
       assert.equals(callable(), 'a')
 
       callable = Callable.new(true)
@@ -25,7 +24,7 @@ describe('Callable', function()
     end)
     it('should work with a callable value', function()
       assert.equals(Callable.new(1)(), 1)
-      assert.equals(Callable.new('a')(), 'a')
+      assert.equals(Callable.new 'a'(), 'a')
       assert.equals(Callable.new(true)(), true)
       assert.equals(Callable.new(false)(), false)
 
@@ -42,4 +41,3 @@ describe('Callable', function()
     end)
   end)
 end)
-

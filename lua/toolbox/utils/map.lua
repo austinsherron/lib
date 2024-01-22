@@ -1,19 +1,21 @@
-
+--- A simple implementation of map, filter, reduce.
+---
+---@class Map
 local Map = {}
 
---- Filters items in tbl according to the provided filter function.
+--- Filters items in arr according to the provided filter function.
 --
 ---@generic T
----@param tbl T[]: the table to filter; if not array-like, keys will not be inserted
+---@param arr T[]: the array to filter; if not array-like, keys will not be inserted
 -- into the returned table; not modified
----@param filter fun(i: T): f: boolean: used to test each item in tbl; if filter returns
--- true for an item, that item will be included in the return value
+---@param filter fun(e: T, i: integer): f: boolean: used to test each item in arr; if
+--- filter returns true for an item, that item will be included in the return value
 ---@return T[]: a new table that contains values filtered by filter
-function Map.filter(tbl, filter)
+function Map.filter(arr, filter)
   local out = {}
 
-  for _, item in ipairs(tbl) do
-    if filter(item) then
+  for i, item in ipairs(arr) do
+    if filter(item, i) then
       table.insert(out, item)
     end
   end
@@ -21,46 +23,55 @@ function Map.filter(tbl, filter)
   return out
 end
 
-
---- Transforms items in tbl according to mapper.
---
+--- Transforms items in arr according to mapper.
+---
 ---@generic T, M
----@param tbl T[]: the table to map; if not array-like, keys will not be inserted into
--- returned table; not modified
----@param mapper fun(i: T): m: M: called on each item in tbl; the return table is
--- comprised of the return values of this function from each item in the original tbl
----@return M[]: a table comprised of the return value of mapper called on each item in the
--- original tbl
-function Map.map(tbl, mapper)
+---@param arr T[]: the array to map; if not array-like, keys will not be inserted into
+--- returned table; not modified
+---@param mapper fun(e: T, i: integer): m: M: called on each item in arr; the returned
+--- array is comprised of the return values of this function from each item in the
+--- original arr
+---@return M[]: an array comprised of the return value of mapper called on each item in
+--- the original array
+function Map.map(arr, mapper)
   local out = {}
 
-  for _, item in ipairs(tbl) do
-    table.insert(out, mapper(item))
+  for i, item in ipairs(arr) do
+    table.insert(out, mapper(item, i))
   end
 
   return out
 end
 
-
---- Reduces items in tbl based on the provided reducer function and initial value.
---
+--- Reduces items in arr based on the provided reducer function and initial value.
+---
 ---@generic T
----@param tbl T[]: the table to reduce; if not array-like, keys will not be inserted into
--- returned table; not modified
----@param reducer fun(l: T?, r: T): c: T: a function that takes and "combines" in arbitrary
--- ways two values: the combined value so far (or init, before any values have been "reduced")
--- and the "Nth" value of table
----@param init T?: or nil: the initial reduced value
----@return T: value of the "reducer" function after having been called on every element of tbl
-function Map.reduce(tbl, reducer, init)
+---@param arr T[]: the array to reduce; if not array-like, keys will not be inserted into
+--- returned table; not modified
+---@param reducer fun(l: T|nil, r: T, i: integer): c: T: a function that takes and
+--- "combines" in arbitrary ways two values: the combined value so far (or init, before
+--- any values have been "reduced") and the nth value of table
+---@param init T|nil: the initial "reduced" value
+---@return T: value of the "reducer" function after having been called on every element of arr
+function Map.reduce(arr, reducer, init)
   local out = init
 
-  for _, item in ipairs(tbl) do
-    out = reducer(item, out)
+  for i, item in ipairs(arr) do
+    out = reducer(item, out, i)
   end
 
   return out
+end
+
+--- Call func on each item in arr.
+---
+---@generic T
+---@param arr T[]: the array whose contents will be arguments to successive calls to func
+---@param func fun(e: T, i: integer) the function to call on individual items in arr
+function Map.foreach(arr, func)
+  for i, item in ipairs(arr) do
+    func(item, i)
+  end
 end
 
 return Map
-

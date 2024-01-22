@@ -1,6 +1,5 @@
-local Bool       = require 'toolbox.core.bool'
-local Table      = require 'toolbox.core.table'
-
+local Bool = require 'toolbox.core.bool'
+local Table = require 'toolbox.core.table'
 
 --- A simple decorator class.
 ---
@@ -16,9 +15,8 @@ Decorator.__index = Decorator
 --- functionality)
 ---@return Decorator: a new instance
 function Decorator.new(fn)
-    return setmetatable({ fn = fn }, Decorator)
+  return setmetatable({ fn = fn }, Decorator)
 end
-
 
 --- Implements function-like "callability" for Decorator instances.
 ---
@@ -28,16 +26,14 @@ function Decorator:__call(...)
   return self.fn(...)
 end
 
-
 --- Decorates the provided function w/ the decorator's function.
 ---
 ---@return function: a function that decorates fn w/ the decorator's function
 function Decorator:decorate_one(fn)
   return function(...)
-      return self(fn(...))
+    return self(fn(...))
   end
 end
-
 
 --- Recursively decorates functions and classes in the provided class.
 ---
@@ -61,7 +57,6 @@ function Decorator:decorate_all(class, recursively)
   return class
 end
 
-
 --- Decorates either a single function, or recursively decorate a class, depending on the
 --- value provided.
 ---
@@ -82,7 +77,6 @@ function Decorator:decorate(to_decorate, recursively)
   end
 end
 
-
 --- Syntactic sugar for Decorator:decorate.
 ---@see Decorator.decorate
 function Decorator:__concat(to_decorate)
@@ -90,4 +84,3 @@ function Decorator:__concat(to_decorate)
 end
 
 return Decorator
-

@@ -4,19 +4,70 @@ local function nil_or_empty(string)
   return string == nil or string == ''
 end
 
+
+local function bool_to_str(bool)
+  return bool and 'true' or 'false'
+end
+
+
+local function digit(num, n)
+  return math.floor(num / 10 ^ n) % 10
+end
+
+
+local function ndigits(num)
+  return math.floor(math.log(num, 10) + 1)
+end
+
+
+local function int_to_str(num)
+  local str = ''
+  local n = ndigits(num)
+
+  for i = n - 1, 0, -1 do
+    str = str .. digit(num, i)
+  end
+
+  return str
+end
+
+
+local function num_to_str(num)
+  local neg = num < 0
+
+  local abs = math.abs(num)
+  local int = math.floor(abs)
+  local dec = abs - int
+
+  local sign = neg and '-' or ''
+  local intstr = int_to_str(int)
+  local decstr = dec > 0 and '.' .. int_to_str(dec) or ''
+
+  return sign .. intstr .. decstr
+end
+
+
 ---@note: this exists so local functions can use mutual recursion
 local Stringify = {}
 
-function Stringify.maybe_table(maybe_tbl, o, c, sep, seen)
+function Stringify.object(obj, o, c, sep, seen)
   -- if Common.Table.is(maybe_tbl) and seen[maybe_tbl] ~= nil then
   --   return 'CYCLE'
   -- elseif Common.Table.is(maybe_tbl) then
-  if type(maybe_tbl) == 'table' then
-    seen[maybe_tbl] = true
-    return Stringify.table(maybe_tbl, o, c, sep, seen)
+  if type(obj) == 'table' then
+    seen[obj] = true
+    return Stringify.table(obj, o, c, sep, seen)
+  elseif type(obj) == 'function' then
+    return 'function(?)'
+  elseif type(obj) == 'boolean' then
+    return bool_to_str(obj)
+  elseif type(obj) == 'number' then
+    return num_to_str(obj)
+  elseif obj == nil then
+    return 'nil'
   end
 
-  return tostring(maybe_tbl)
+  return obj
 end
 
 
@@ -41,7 +92,8 @@ function Stringify.table(tbl, o, c, sep, seen)
   ---@note: since classes/objects are tables, check to see if the table has a tostring
   --- meta-method; if not, use the home-baked generic table.tostring function
   if tbl.__tostring ~= nil then
-    return tostring(tbl)
+    -- return tostring(tbl)
+    return tbl:__tostring()
   end
 
   seen[tbl] = true
@@ -51,15 +103,15 @@ function Stringify.table(tbl, o, c, sep, seen)
   local i = 1; local j = 1
 
   for k, v in pairs(tbl) do
-    local key_str = Stringify.maybe_table(k, o, c, sep, seen)
-    local val_str = Stringify.maybe_table(v, o, c, sep, seen)
+    local key_str = Stringify.object(k, o, c, sep, seen)
+    local val_str = Stringify.object(v, o, c, sep, seen)
 
     local nxt = (i == 1 and '' or sep) .. key_str .. ' = ' .. val_str
     str = str .. nxt
     i = i + 1
 
     if arr_str ~= nil and tbl[j] ~= nil then
-      nxt = (j == 1 and '' or sep) .. Stringify.maybe_table(v, o, c, sep, seen)
+      nxt = (j == 1 and '' or sep) .. Stringify.object(v, o, c, sep, seen)
       arr_str = arr_str .. nxt
       j = j + 1
     elseif arr_str ~= nil then
@@ -117,6 +169,7 @@ return function(obj, o, c, sep)
     return Stringify.func(obj)
   end
 
-  return tostring(obj)
+  -- return tostring(obj)
+  return Stringify.object(obj, o, c, sep)
 end
 

@@ -2,7 +2,6 @@ local Lambda = require 'toolbox.functional.lambda'
 
 local assert = require 'luassert.assert'
 
-
 describe('Lambda', function()
   describe('NOOP', function()
     it('should return nil', function()
@@ -25,7 +24,7 @@ describe('Lambda', function()
   describe('IDENTITY', function()
     it('should return the value', function()
       assert.equals(Lambda.IDENTITY(1), 1)
-      assert.equals(Lambda.IDENTITY('a'), 'a')
+      assert.equals(Lambda.IDENTITY 'a', 'a')
       assert.equals(Lambda.IDENTITY(true), true)
       assert.equals(Lambda.IDENTITY(false), false)
       assert.same(Lambda.IDENTITY({ a = 1 }), { a = 1 })

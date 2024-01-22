@@ -1,7 +1,6 @@
-local Table  = require 'toolbox.core.table'
-local String = require 'toolbox.core.string'
 local Stream = require 'toolbox.extensions.stream'
-
+local String = require 'toolbox.core.string'
+local Table = require 'toolbox.core.table'
 
 --- Convenience class that wraps basic errors.
 ---
@@ -15,12 +14,9 @@ local Error = {}
 ---@param ... any|nil: values to stringify and format into base_msg
 ---@error an error w/ a message formatted from the provided string and tokens
 function Error.raise(base_msg, ...)
-  local args = Stream(Table.pack(...))
-    :map(String.tostring)
-    :collect()
+  local args = Stream.new(Table.pack(...)):map(String.tostring):collect()
 
   error(string.format(base_msg, Table.unpack(args)))
 end
 
 return Error
-

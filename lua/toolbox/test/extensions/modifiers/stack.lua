@@ -5,11 +5,10 @@ local Utils = require 'toolbox.test.utils'
 
 local assert = require 'luassert.assert'
 
-local fmt          = Utils.fmt
+local fmt = Utils.fmt
 local table_equals = Utils.table_equals
-local table_len    = Utils.table_len
-local to_set       = Utils.to_set
-
+local table_len = Utils.table_len
+local to_set = Utils.to_set
 
 --- A handler for an assert modifier that enables interactions w/ stacks. For example:
 ---
@@ -35,7 +34,7 @@ local StackHandler = {}
 ---@param stack Stack: the stack to check (implicit argument passed via assert.stack)
 function StackHandler.contains(stack, args)
   local should_contain = args[1]
-  assert(#should_contain > 0, fmt('#should_contains must be > 0'))
+  assert(#should_contain > 0, fmt '#should_contains must be > 0')
 
   local stack_set = to_set(stack.stack)
   local missing = nil
@@ -44,7 +43,7 @@ function StackHandler.contains(stack, args)
     if stack_set[e] == nil then
       missing = e
       args[1] = e
-      break   -- fail fast on first missing value
+      break -- fail fast on first missing value
     end
   end
 
@@ -68,7 +67,6 @@ function StackHandler.empty(stack, args)
   return stack_len == 0, { stack_len }
 end
 
-
 --- A stack assertion that checks that a stack equals another stack, and whose negation
 --- checks that it doesn't. For example:
 ---
@@ -86,7 +84,6 @@ function StackHandler.eq(stack, args)
 
   return table_equals(stack.stack, other.stack), { other }
 end
-
 
 --- A stack assertion that checks that a stack is the same object as another stack, and
 --- whose negation checks that it's not. For example:
@@ -107,7 +104,6 @@ function StackHandler.is(stack, args)
   return rawequal(stack, other), { other }
 end
 
-
 --- A stack assertion that checks that a stack has a specific length, and whose negation
 --- checks that its length is anything other. For example:
 ---
@@ -127,4 +123,3 @@ function StackHandler.length(stack, args)
 end
 
 return StackHandler
-

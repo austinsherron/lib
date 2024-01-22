@@ -1,6 +1,5 @@
+local Iter = require 'toolbox.utils.iter'
 local Table = require 'toolbox.core.table'
-local Iter  = require 'toolbox.extensions.iter'
-
 
 --- A simple set implementation whose instances are backed by tables.
 --
@@ -19,7 +18,6 @@ local function add(item, set)
   set.items[item] = true
 end
 
-
 --- Constructor
 --
 ---@generic T
@@ -37,7 +35,6 @@ function Set.new(initial)
   return this
 end
 
-
 --- Constructor
 ---
 ---@generic T
@@ -46,7 +43,6 @@ end
 function Set.of(...)
   return Set.new(Table.pack(...))
 end
-
 
 --- Constructor for a set w/ one (initial) item.
 ---
@@ -57,14 +53,12 @@ function Set.only(item)
   return Set.new({ item })
 end
 
-
 --- Constructor for a set w/ no elements.
 ---
 ---@return Set: a new instance w/ no items
 function Set.empty()
   return Set.new()
 end
-
 
 --- Copy constructor
 --
@@ -76,14 +70,13 @@ end
 function Set.copy(o)
   local this = { items = {}, len = 0 }
 
-  for item, _  in pairs(o.items) do
+  for item, _ in pairs(o.items) do
     add(item, this)
   end
 
   setmetatable(this, Set)
   return this
 end
-
 
 --- Adds an item to the set.
 --
@@ -93,19 +86,37 @@ function Set:add(item)
   add(item, self)
 end
 
-
 --- Adds all provided items to the set.
 --
 ---@generic T
 ---@param ... T: the items to add to the set
 function Set:addall(...)
-  local items = table.pack(...)
+  local items = Table.pack(...)
 
   for _, item in ipairs(items) do
     self:add(item)
   end
 end
 
+--- Removes an item from the set, if present.
+---
+---@generic T
+---@param item T: the item to remove from the set
+function Set:remove(item)
+  self.items[item] = nil
+end
+
+--- Removes all provided items from the set, if present.
+---
+---@generic T
+---@param ... T: the items to remove from the set
+function Set:removeall(...)
+  local items = Table.pack(...)
+
+  for _, item in ipairs(items) do
+    self:remove(item)
+  end
+end
 
 --- Returns true if item is in the set, false otherwise.
 --
@@ -116,6 +127,33 @@ function Set:contains(item)
   return self.items[item] ~= nil
 end
 
+---@generic T
+---@return T[]: an array-like table that contains the entries in the set
+function Set:entries()
+  return Table.keys(self.items)
+end
+
+--- Checks if the set is a superset of o.
+---
+---@param o Set: the set to check
+---@return boolean: true if the set is a superset of o, false otherwise
+function Set:superset_of(o)
+  return o:subset_of(self)
+end
+
+--- Checks if the set is a subset of o.
+---
+---@param o Set: the set to check
+---@return boolean: true if the set is a subset of o, false otherwise
+function Set:subset_of(o)
+  for e, _ in pairs(self.items) do
+    if o.items[e] == nil then
+      return false
+    end
+  end
+
+  return true
+end
 
 --- Returns the number of items in the set.
 --
@@ -124,7 +162,6 @@ end
 function Set:__len()
   return self.len
 end
-
 
 --- Checks if the provided set is equal to this set.
 --
@@ -150,14 +187,6 @@ function Set:__eq(o)
   return true
 end
 
-
----@generic T
----@return T[]: an array-like table that contains the entries in the set
-function Set:entries()
-  return Table.keys(self.items)
-end
-
-
 --- Constructs and returns the union of this set and the set "o".
 --
 ---@param o Set: the "other" set
@@ -166,7 +195,6 @@ function Set:__add(o)
   new:addall(Table.unpack(o:entries()))
   return new
 end
-
 
 --- Constructs and returns the difference of this set and the set "o".
 --
@@ -183,14 +211,12 @@ function Set:__sub(o)
   return new
 end
 
-
 ---Alias for Set:__add.
 --
 ---@see Set.__add
 function Set:__concat(o)
   return self + o
 end
-
 
 --- Metamethod that allows sets to be used w/ the ipairs function.
 --
@@ -204,7 +230,6 @@ function Set:__ipairs()
   return next, entries, nil
 end
 
-
 --- Constructs and returns a string representation of the set.
 --
 ---@return string: a string representation of the set
@@ -214,4 +239,3 @@ function Set:__tostring()
 end
 
 return Set
-

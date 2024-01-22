@@ -45,4 +45,3 @@
 -- -- HandlerParams = ImmutableDataClass.new('HandlerParams', {'app', 'window', 'workspace'})
 -- -- LibreWolfParams = HandlerParams.new({app = 'librewolf', window = 'librewolf'})
 --
-

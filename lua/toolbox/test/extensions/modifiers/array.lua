@@ -4,10 +4,9 @@ local Utils = require 'toolbox.test.utils'
 
 local assert = require 'luassert.assert'
 
-local fmt          = Utils.fmt
+local fmt = Utils.fmt
 local table_equals = Utils.table_equals
-local to_set       = Utils.to_set
-
+local to_set = Utils.to_set
 
 --- A handler for an assert modifier that enables interactions w/ arrays. For example:
 ---
@@ -33,7 +32,7 @@ local ArrayHandler = {}
 ---@param arr any[]: the array to check (implicit argument passed via assert.array)
 function ArrayHandler.contains(arr, args)
   local should_contain = args[1]
-  assert(#should_contain > 0, fmt('#should_contains must be > 0'))
+  assert(#should_contain > 0, fmt '#should_contains must be > 0')
 
   local arr_set = to_set(arr)
   local missing = nil
@@ -42,7 +41,7 @@ function ArrayHandler.contains(arr, args)
     if arr_set[e] == nil then
       missing = e
       args[1] = e
-      break   -- fail fast on first missing value
+      break -- fail fast on first missing value
     end
   end
 
@@ -64,7 +63,6 @@ function ArrayHandler.empty(arr, args)
   return #arr == 0, { #arr }
 end
 
-
 --- An array assertion that checks that an array is equal to another array, and whose
 --- negation checks that it isn't. For example:
 ---
@@ -80,7 +78,6 @@ function ArrayHandler.eq(arr, args)
 
   return table_equals(arr, other), { other }
 end
-
 
 --- An array assertion that checks that an array is the same object as another array, and
 --- whose negation checks that it's not. For example:
@@ -101,7 +98,6 @@ function ArrayHandler.is(arr, args)
   return rawequal(arr, other), { other }
 end
 
-
 --- An array assertion that checks that an array has a specific length, and whose negation
 --- checks that it's length is anything other. For example:
 ---
@@ -120,4 +116,3 @@ function ArrayHandler.length(arr, args)
 end
 
 return ArrayHandler
-

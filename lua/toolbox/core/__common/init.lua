@@ -1,4 +1,3 @@
-
 --- Module for internal use that contains functions used in > 1 core class. Exists to
 --- avoid cyclic dependencies.
 ---
@@ -7,6 +6,17 @@ local Common = {}
 
 ---@class Common.Array
 Common.Array = {}
+
+--- Appends item to arr.
+---
+---@note: this function mutates arr.
+---
+---@generic T
+---@param arr T[]: the array to which to append item
+---@param item T: the item to append to array
+function Common.Array.append(arr, item)
+  table.insert(arr, item)
+end
 
 --- Recursively checks if two arrays are equal.
 ---
@@ -34,6 +44,24 @@ function Common.Array.equals(l, r)
   return true
 end
 
+--- Gets the value of arr at idx, or optionally sets it if val is non-nil.
+---
+---@note: Negative indices function like "#arr + idx + 1".
+---
+---@generic T
+---@param arr T[]: the array from which to retrieve a value
+---@param idx integer: the idx to retrieve
+---@param val T|nil: an optional value to set at idx
+---@return T: the value of arr at idx, or at "#arr + idx + 1" if idx < 0
+function Common.Array.index(arr, idx, val)
+  idx = Common.Bool.ternary(idx < 0, #arr + idx + 1, idx)
+
+  if val ~= nil then
+    arr[idx] = val
+  end
+
+  return arr[idx]
+end
 
 --- Returns a "slice" of an array from start idx = s to end idx = e, inclusive. For
 --- example:
@@ -100,7 +128,6 @@ local function func_or_val(ToF)
   return ToF
 end
 
-
 --- Function that makes Lua ternary expressions more like those in other languages.
 ---
 --- Note: to return functions, the functions themselves must be wrapped in functions.
@@ -113,9 +140,12 @@ end
 ---@return TType|FType: T if cond evaluates to true, F otherwise
 function Common.Bool.ternary(cond, T, F)
   -- TODO: replace "func_or_val" w/ toolbox.functional.callable.Callable
-  if cond then return func_or_val(T) else return func_or_val(F) end
+  if cond then
+    return func_or_val(T)
+  else
+    return func_or_val(F)
+  end
 end
-
 
 --- Returns bool if bool ~= nil, otherwise returns default.
 ---
@@ -166,13 +196,36 @@ function Common.String.fmt(base, ...)
   return string.format(base, ...)
 end
 
-
 --- Returns true if the provided string nil or empty.
 ---
 ---@param str string?: the string to check
 ---@return boolean: true if the provided string is nil or empty, false otherwise
 function Common.String.nil_or_empty(str)
   return str == nil or str == ''
+end
+
+--- Joins an array of strings w/ sep.
+---
+---@param strs string[]: the strings to join
+---@param sep string|nil: optional, defaults to ','; the char string w/ which to join strs
+---@return string: a single string comprised of the elements of strs, joined by sep
+function Common.String.join(strs, sep)
+  sep = sep or ','
+
+  if #strs == 0 then
+    return ''
+  end
+  if #strs == 1 then
+    return strs[1]
+  end
+
+  local out = ''
+
+  for i, str in ipairs(strs) do
+    out = Common.Bool.ternary(i == 1, str, out .. sep .. str)
+  end
+
+  return out
 end
 
 ---@class Common.Table
@@ -185,7 +238,6 @@ Common.Table = {}
 function Common.Table.is(o)
   return type(o) == 'table'
 end
-
 
 --- TODO: remove in favor of Dict function.
 --- Checks if the provided table is empty.
@@ -206,7 +258,6 @@ function Common.Table.is_empty(tbl)
   return true
 end
 
-
 --- TODO: remove in favor of Dict function.
 --- Checks that an array-like table table is nil or empty.
 --
@@ -217,5 +268,65 @@ function Common.Table.nil_or_empty(tbl)
   return tbl == nil or Common.Table.is_empty(tbl)
 end
 
-return Common
+--- Home-baked "pack" table function.
+---
+---@see table.pack
+---@param ... any: values to pack
+---@return table: the values passed to pack into (i.e.: wrap in) a table
+function Common.Table.pack(...)
+  local pack = pack or table.pack
 
+  if pack == nil then
+    return { ... }
+  end
+
+  local packed = pack(...)
+  -- pack seems to sometimes (always?) add a key-value pair n = #packed, which I don't
+  -- want (or haven't found a reason to yet)
+  packed.n = nil
+  return packed
+end
+
+--- Creates a "shallow copy" of the provided table, i.e.: creates a new table to which
+--- keys/values are assigned w/out any consideration of their types.
+---
+---@param tbl { [any]: any }: the table to shallow copy
+---@return { [any]: any }: a "shallow copy" of the provided table
+function Common.Table.shallow_copy(tbl)
+  local new = {}
+
+  for k, v in pairs(tbl) do
+    new[k] = v
+  end
+
+  return new
+end
+
+--- Merges table r into table l. Note: this function can (read: likely will) mutate table l.
+---
+---@generic K, V, S, T
+---@param l { [K]: V }: the table into which table r will be merged; colliding values are
+--- overwritten in this table; this table can be mutated by this function
+---@param r { [S]: T }: the table to merge into table l
+function Common.Table.merge(l, r)
+  for k, v in pairs(r) do
+    l[k] = v
+  end
+end
+
+--- Creates a new table by performing a shallow copy of table l and merging table r into
+--- that copy.
+---
+---@param l { [any]: any }: the table whose copy will have table r merged into it; colliding values
+--- from this table are overwritten
+---@param r { [any]: any }: the table that will be merged into the copy of table l
+---@return { [any]: any }: a new table created by performing a shallow copy of table l and
+--- merging table r into that copy
+function Common.Table.combine(l, r)
+  local new = Table.shallow_copy(l)
+  Table.merge(new, r)
+
+  return new
+end
+
+return Common

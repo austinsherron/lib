@@ -1,9 +1,8 @@
 local Array = require 'toolbox.core.array'
+local Iter = require 'toolbox.utils.iter'
 local Table = require 'toolbox.core.table'
-local Iter  = require 'toolbox.extensions.iter'
 
 local ternary = require('toolbox.core.bool').ternary
-
 
 --- A simple stack implementation whose instances are backed by tables.
 ---
@@ -12,7 +11,6 @@ local ternary = require('toolbox.core.bool').ternary
 ---@field private stack `T`[]: backing data structure
 local Stack = {}
 Stack.__index = Stack
-
 
 --- Constructor
 ---
@@ -23,7 +21,6 @@ function Stack.new(...)
   local this = { stack = Table.pack(...) }
   return setmetatable(this, Stack)
 end
-
 
 --- Copy constructor
 ---
@@ -36,7 +33,6 @@ function Stack.copy(o)
   return Stack.new(Table.unpack(o.stack))
 end
 
-
 --- Returns the number of items in the stack.
 ---
 ---@operator unm:Stack
@@ -45,12 +41,10 @@ function Stack:__len()
   return #self.stack
 end
 
-
 ---@return boolean: true if there are no items in the stack, false otherwise
 function Stack:empty()
   return #self.stack == 0
 end
-
 
 --- Pushes an item onto the stack.
 ---
@@ -59,7 +53,6 @@ end
 function Stack:push(item)
   Array.append(self.stack, item)
 end
-
 
 --- Pops an item off of the stack and returns it, or nil if the stack is
 --- empty.
@@ -73,15 +66,10 @@ function Stack:pop()
 
   local popped = self:peek()
 
-  self.stack = ternary(
-    #self == 1,
-    {},
-    Array.slice(self.stack, 1, -1)
-  )
+  self.stack = ternary(#self == 1, {}, Array.slice(self.stack, 1, -1))
 
   return popped
 end
-
 
 ---@generic T
 ---@return T|nil: returns the same value as would an equivalent call to pop w/out
@@ -89,7 +77,6 @@ end
 function Stack:peek()
   return self.stack[#self]
 end
-
 
 ---@generic T
 ---@return T[]: returns all items in the stack w/out popping any elements; elements are
@@ -99,7 +86,6 @@ function Stack:peekall()
   return Array.reversed(self.stack)
 end
 
-
 --- Pushes all provided items onto the stack.
 ---
 ---@generic T
@@ -107,7 +93,6 @@ end
 function Stack:pushall(...)
   self.stack = Table.concat({ self.stack, Table.pack(...) })
 end
-
 
 --- Checks if the provided stack is equal to this stack.
 ---
@@ -132,7 +117,6 @@ function Stack:__eq(o)
   return true
 end
 
-
 --- Metamethod that allows stacks to be used w/ the ipairs function, i.e.: that enables
 --- iteration over stacks.
 ---
@@ -148,7 +132,6 @@ function Stack:__ipairs()
   return next, items, nil
 end
 
-
 --- Constructs and returns a string representation of the set.
 ---
 ---@return string: a string representation of the set
@@ -157,4 +140,3 @@ function Stack:__tostring()
 end
 
 return Stack
-

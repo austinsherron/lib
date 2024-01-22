@@ -1,6 +1,5 @@
 local Dict = require 'toolbox.core.dict'
 
-
 describe('Dict', function()
   describe('.is_empty(dict)', function()
     it('should return true when the dict is empty', function()
@@ -52,14 +51,14 @@ describe('Dict', function()
       assert.True(Dict.equals(l, r))
     end)
     it('should return true if l and r are nested tables w/ the same values', function()
-      local l = { a = 1, b = 2, c = { d = 3, f = 4 }}
-      local r = { a = 1, b = 2, c = { d = 3, f = 4 }}
+      local l = { a = 1, b = 2, c = { d = 3, f = 4 } }
+      local r = { a = 1, b = 2, c = { d = 3, f = 4 } }
 
       assert.True(Dict.equals(l, r))
     end)
     it('should return true if l and r are deeply nested tables w/ the same values', function()
-      local l = { a = 1, b = 2, c = { d = { g = 5, h = 6 }, f = 4 }}
-      local r = { a = 1, b = 2, c = { d = { g = 5, h = 6 }, f = 4 }}
+      local l = { a = 1, b = 2, c = { d = { g = 5, h = 6 }, f = 4 } }
+      local r = { a = 1, b = 2, c = { d = { g = 5, h = 6 }, f = 4 } }
 
       assert.True(Dict.equals(l, r))
     end)
@@ -82,56 +81,56 @@ describe('Dict', function()
       assert.False(Dict.equals(l, r))
     end)
     it('should return false w/ multiple of the previous "falsy" test conditions', function()
-      local l = { a = 1, b = 2, c = 3, d = 5}
+      local l = { a = 1, b = 2, c = 3, d = 5 }
       local r = { a = 1, b = 2, c = 4, e = 6 }
 
       assert.False(Dict.equals(l, r))
     end)
     it("should return false if a sub-table of l has a key/value pair that r doesn't have", function()
-      local l = { a = 1, b = 2, c = { d = 3, f = 4, g = 5 }}
-      local r = { a = 1, b = 2, c = { d = 3, f = 4 }}
+      local l = { a = 1, b = 2, c = { d = 3, f = 4, g = 5 } }
+      local r = { a = 1, b = 2, c = { d = 3, f = 4 } }
 
       assert.False(Dict.equals(l, r))
     end)
     it("should return false if a sub-table of r has a key/value pair that l doesn't have", function()
-      local l = { a = 1, b = 2, c = { d = 3, f = 4 }}
-      local r = { a = 1, b = 2, c = { d = 3, f = 4, g = 5 }}
+      local l = { a = 1, b = 2, c = { d = 3, f = 4 } }
+      local r = { a = 1, b = 2, c = { d = 3, f = 4, g = 5 } }
 
       assert.False(Dict.equals(l, r))
     end)
     it('should return false if a shared sub-table key has a different value in l and r', function()
-      local l = { a = 1, b = 2, c = { d = 3, f = 4, g = 6 }}
-      local r = { a = 1, b = 2, c = { d = 3, f = 4, g = 5 }}
+      local l = { a = 1, b = 2, c = { d = 3, f = 4, g = 6 } }
+      local r = { a = 1, b = 2, c = { d = 3, f = 4, g = 5 } }
 
       assert.False(Dict.equals(l, r))
     end)
     it('should return false w/ multiple of the previous "falsy" test conditions in a sub-table', function()
-      local l = { a = 1, b = 2, c = { d = 3, f = 4, g = 6, h = 7 }}
-      local r = { a = 1, b = 2, c = { d = 3, f = 4, g = 5, i = 7 }}
+      local l = { a = 1, b = 2, c = { d = 3, f = 4, g = 6, h = 7 } }
+      local r = { a = 1, b = 2, c = { d = 3, f = 4, g = 5, i = 7 } }
 
       assert.False(Dict.equals(l, r))
     end)
     it("should return false if a sub-sub-table of l has a key/value pair that r doesn't have", function()
-      local l = { a = 1, b = 2, c = { d = { g = 5, h = 6, i = 7 }, f = 4 }}
-      local r = { a = 1, b = 2, c = { d = { g = 5, h = 6 }, f = 4 }}
+      local l = { a = 1, b = 2, c = { d = { g = 5, h = 6, i = 7 }, f = 4 } }
+      local r = { a = 1, b = 2, c = { d = { g = 5, h = 6 }, f = 4 } }
 
       assert.False(Dict.equals(l, r))
     end)
     it("should return false if a sub-sub-table of r has a key/value pair that l doesn't have", function()
-      local l = { a = 1, b = 2, c = { d = { g = 5, h = 6 }, f = 4 }}
-      local r = { a = 1, b = 2, c = { d = { g = 5, h = 6, i = 7 }, f = 4 }}
+      local l = { a = 1, b = 2, c = { d = { g = 5, h = 6 }, f = 4 } }
+      local r = { a = 1, b = 2, c = { d = { g = 5, h = 6, i = 7 }, f = 4 } }
 
       assert.False(Dict.equals(l, r))
     end)
     it('should return false if a shared sub-sub-table key has a different value in l and r', function()
-      local l = { a = 1, b = 2, c = { d = { g = 5, h = 6, i = 9 }, f = 4 }}
-      local r = { a = 1, b = 2, c = { d = { g = 5, h = 6, i = 7 }, f = 4 }}
+      local l = { a = 1, b = 2, c = { d = { g = 5, h = 6, i = 9 }, f = 4 } }
+      local r = { a = 1, b = 2, c = { d = { g = 5, h = 6, i = 7 }, f = 4 } }
 
       assert.False(Dict.equals(l, r))
     end)
     it('should return false w/ multiple of the previous "falsy" test conditions in a sub-sub-table', function()
-      local l = { a = 1, b = 2, c = { d = { g = 5, h = 6, i = 9, j = 'ten' }, f = 4 }}
-      local r = { a = 1, b = 2, c = { d = { g = 5, h = 6, i = 7, k = 'ten' }, f = 4 }}
+      local l = { a = 1, b = 2, c = { d = { g = 5, h = 6, i = 9, j = 'ten' }, f = 4 } }
+      local r = { a = 1, b = 2, c = { d = { g = 5, h = 6, i = 7, k = 'ten' }, f = 4 } }
 
       assert.False(Dict.equals(l, r))
     end)
@@ -140,7 +139,9 @@ describe('Dict', function()
   describe('.compute_if_nil(dict, key, compute))', function()
     it("it should add compute's return value to the dict if it's not present", function()
       local dict = { a = 1, b = 2 }
-      local compute = spy.new(function() return 3 end)
+      local compute = spy.new(function()
+        return 3
+      end)
 
       assert.equals(Dict.compute_if_nil(dict, 'c', compute), 3)
       assert.equals(dict.c, 3)
@@ -148,7 +149,9 @@ describe('Dict', function()
     end)
     it("it should not add compute's return value to the dict if it is present", function()
       local dict = { a = 1, b = 2, c = 4 }
-      local compute = spy.new(function() return 3 end)
+      local compute = spy.new(function()
+        return 3
+      end)
 
       assert.equals(Dict.compute_if_nil(dict, 'c', compute), 4)
       assert.equals(dict.c, 4)
@@ -156,4 +159,3 @@ describe('Dict', function()
     end)
   end)
 end)
-

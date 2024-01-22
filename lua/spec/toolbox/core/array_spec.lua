@@ -1,8 +1,7 @@
+local Array = require 'toolbox.core.array'
 local Common = require 'toolbox.core.__common'
-local Array  = require 'toolbox.core.array'
 
 local IsArrayStrategy = Array.IsArrayStrategy
-
 
 describe('Array', function()
   describe('.is(o, strategy)', function()
@@ -17,9 +16,9 @@ describe('Array', function()
         assert.True(Array.is({ 'c', 'b', 'a' }, IsArrayStrategy.BASIC))
 
         ---@note: demonstrates shortcoming of the "basic" strategy
-        assert.True(Array.is({ a = 1  }, IsArrayStrategy.BASIC))
-        assert.True(Array.is({ a = 1, b = 2  }, IsArrayStrategy.BASIC))
-        assert.True(Array.is({ a = 1, b = 2, c = 3  }, IsArrayStrategy.BASIC))
+        assert.True(Array.is({ a = 1 }, IsArrayStrategy.BASIC))
+        assert.True(Array.is({ a = 1, b = 2 }, IsArrayStrategy.BASIC))
+        assert.True(Array.is({ a = 1, b = 2, c = 3 }, IsArrayStrategy.BASIC))
       end)
       it('should return false if o is not a table when strategy is "basic"', function()
         assert.False(Array.is(1, IsArrayStrategy.BASIC))
@@ -42,17 +41,20 @@ describe('Array', function()
         assert.True(Array.is({ 'a', 'b', 'c', d = 4 }, IsArrayStrategy.FAST))
         assert.True(Array.is({ [1] = 'a', [2] = 'b', [4] = 'c' }, IsArrayStrategy.FAST))
       end)
-      it('should return false if o is not a table or there are not values at 1 or #tbl when strategy is "fast"', function()
-        assert.False(Array.is(1, IsArrayStrategy.FAST))
-        assert.False(Array.is('a', IsArrayStrategy.FAST))
-        assert.False(Array.is(false, IsArrayStrategy.FAST))
-        assert.False(Array.is(true, IsArrayStrategy.FAST))
+      it(
+        'should return false if o is not a table or there are not values at 1 or #tbl when strategy is "fast"',
+        function()
+          assert.False(Array.is(1, IsArrayStrategy.FAST))
+          assert.False(Array.is('a', IsArrayStrategy.FAST))
+          assert.False(Array.is(false, IsArrayStrategy.FAST))
+          assert.False(Array.is(true, IsArrayStrategy.FAST))
 
-        assert.False(Array.is({ a = 1 }, IsArrayStrategy.FAST))
-        assert.False(Array.is({ a = 1, b = 2 }, IsArrayStrategy.FAST))
-        assert.False(Array.is({ a = 1, b = 2, c = 3 }, IsArrayStrategy.FAST))
-        assert.False(Array.is({ [2] = 'a', [3] = 'b', [4] = 'c' }, IsArrayStrategy.FAST))
-      end)
+          assert.False(Array.is({ a = 1 }, IsArrayStrategy.FAST))
+          assert.False(Array.is({ a = 1, b = 2 }, IsArrayStrategy.FAST))
+          assert.False(Array.is({ a = 1, b = 2, c = 3 }, IsArrayStrategy.FAST))
+          assert.False(Array.is({ [2] = 'a', [3] = 'b', [4] = 'c' }, IsArrayStrategy.FAST))
+        end
+      )
     end)
     describe('strategy == "strict"', function()
       it('should return true if o is a table and there are values at 1-#tbl when strategy is "strict"', function()
@@ -61,43 +63,46 @@ describe('Array', function()
         assert.True(Array.is({ 1, 2, 3 }, IsArrayStrategy.STRICT))
         assert.True(Array.is({ 1, 2, 3, 4 }, IsArrayStrategy.STRICT))
       end)
-      it('should return false if o is not a table or there are not values at 1-#tbl when strategy is "strict"', function()
-        assert.False(Array.is(1, IsArrayStrategy.STRICT))
-        assert.False(Array.is('a', IsArrayStrategy.STRICT))
-        assert.False(Array.is(false, IsArrayStrategy.STRICT))
-        assert.False(Array.is(true, IsArrayStrategy.STRICT))
+      it(
+        'should return false if o is not a table or there are not values at 1-#tbl when strategy is "strict"',
+        function()
+          assert.False(Array.is(1, IsArrayStrategy.STRICT))
+          assert.False(Array.is('a', IsArrayStrategy.STRICT))
+          assert.False(Array.is(false, IsArrayStrategy.STRICT))
+          assert.False(Array.is(true, IsArrayStrategy.STRICT))
 
-        assert.False(Array.is({ a = 1 }, IsArrayStrategy.STRICT))
-        assert.False(Array.is({ a = 1, b = 2 }, IsArrayStrategy.STRICT))
-        assert.False(Array.is({ a = 1, b = 2, c = 3 }, IsArrayStrategy.STRICT))
-        assert.False(Array.is({ [2] = 'a', [3] = 'b', [4] = 'c' }, IsArrayStrategy.STRICT))
+          assert.False(Array.is({ a = 1 }, IsArrayStrategy.STRICT))
+          assert.False(Array.is({ a = 1, b = 2 }, IsArrayStrategy.STRICT))
+          assert.False(Array.is({ a = 1, b = 2, c = 3 }, IsArrayStrategy.STRICT))
+          assert.False(Array.is({ [2] = 'a', [3] = 'b', [4] = 'c' }, IsArrayStrategy.STRICT))
 
-        assert.False(Array.is({ 'a', 'b', 'c', d = 4 }, IsArrayStrategy.STRICT))
-        assert.False(Array.is({ [1] = 'a', [2] = 'b', [4] = 'c' }, IsArrayStrategy.STRICT))
-      end)
+          assert.False(Array.is({ 'a', 'b', 'c', d = 4 }, IsArrayStrategy.STRICT))
+          assert.False(Array.is({ [1] = 'a', [2] = 'b', [4] = 'c' }, IsArrayStrategy.STRICT))
+        end
+      )
     end)
   end)
 
-  describe('.is_empty(arr, strict)', function ()
+  describe('.is_empty(arr, strict)', function()
     describe('array is empty', function()
-      it('it should return true if arr is empty and strict is true', function ()
+      it('it should return true if arr is empty and strict is true', function()
         assert.True(Array.is_empty({}))
         assert.True(Array.is_empty({ nil }))
       end)
-      it('it should return true if arr is empty and strict is false', function ()
+      it('it should return true if arr is empty and strict is false', function()
         assert.True(Array.is_empty({}, false))
         assert.True(Array.is_empty({ nil }, false))
       end)
     end)
     describe('array is not empty', function()
-      it('it should return false if arr is not empty and strict is true', function ()
+      it('it should return false if arr is not empty and strict is true', function()
         assert.False(Array.is_empty({ 1 }))
         assert.False(Array.is_empty({ 'z' }))
 
         assert.False(Array.is_empty({ 3, 1, 2 }))
         assert.False(Array.is_empty({ 'wof', 'xor', 'asb', 'zab' }))
       end)
-      it('it should return false if arr is not empty and strict is false', function ()
+      it('it should return false if arr is not empty and strict is false', function()
         assert.False(Array.is_empty({ 1 }, false))
         assert.False(Array.is_empty({ 'z' }, false))
 
@@ -106,13 +111,13 @@ describe('Array', function()
       end)
     end)
     describe('array is nil', function()
-      it('it should raise and error if arr is nil and strict is true', function ()
+      it('it should raise and error if arr is nil and strict is true', function()
         assert.has_error(function()
           Array.is_empty(nil)
         end)
       end)
-      it('it should return true if arr is nil and strict is false', function ()
-          Array.is_empty(nil, false)
+      it('it should return true if arr is nil and strict is false', function()
+        Array.is_empty(nil, false)
       end)
     end)
   end)
@@ -180,7 +185,7 @@ describe('Array', function()
       assert.False(Array.equals({ 1, 2, 3 }, { 3, 2 }))
     end)
     it('should return false if #l ~= #r because of differen internal types', function()
-      assert.False(Array.equals({ 1, 2, 3 }, { 'a', 'b', 'c'}))
+      assert.False(Array.equals({ 1, 2, 3 }, { 'a', 'b', 'c' }))
     end)
     it('should return false if #l ~= #r and their lengths are 1', function()
       assert.False(Array.equals({ 1 }, { 2 }))
@@ -190,6 +195,16 @@ describe('Array', function()
     end)
     it('should return false if #l ~= #r and r is empty', function()
       assert.False(Array.equals({ 1, 2, 3 }, {}))
+    end)
+  end)
+
+  describe('.index(arr, idx, val)', function()
+    local arr = { 1, 2, 3 }
+
+    it('should get the item at the provided index', function()
+      assert.equals(Array.index(arr, 1))
+      assert.equals(Array.index(arr, 2))
+      assert.equals(Array.index(arr, 3))
     end)
   end)
 
@@ -205,27 +220,31 @@ describe('Array', function()
       assert.Nil(Array.indexof(arr, 'f'))
     end)
     it('should allow for a custom compare function that returns an index if the it returns true', function()
-      local compare = function(entry, e) return  Common.String.fmt('%s-%s', entry, e) == '1-c' end
+      local compare = function(entry, e)
+        return Common.String.fmt('%s-%s', entry, e) == '1-c'
+      end
       assert.equals(Array.indexof(arr, 1, compare), 3)
     end)
     it('should allow for a custom compare function that returns nil if it never returns true', function()
-      local compare = function(entry, e) return  Common.String.fmt('%s-%s', entry, e) == '1-f' end
+      local compare = function(entry, e)
+        return Common.String.fmt('%s-%s', entry, e) == '1-f'
+      end
       assert.Nil(Array.indexof(arr, 1, compare))
     end)
   end)
 
   describe('.append(arr, item)', function()
     it('it should append to an empty array', function()
-        local arr = {}
-        Array.append(arr, 1)
+      local arr = {}
+      Array.append(arr, 1)
 
-        assert.True(Array.equals(arr, { 1 }))
+      assert.True(Array.equals(arr, { 1 }))
     end)
     it('it should append to an non-empty array', function()
-        local arr = { 84, 35, 9000.123 }
-        Array.append(arr, 111)
+      local arr = { 84, 35, 9000.123 }
+      Array.append(arr, 111)
 
-        assert.True(Array.equals(arr, { 84, 35, 9000.123, 111 }))
+      assert.True(Array.equals(arr, { 84, 35, 9000.123, 111 }))
     end)
   end)
 
@@ -301,4 +320,3 @@ describe('Array', function()
     end)
   end)
 end)
-

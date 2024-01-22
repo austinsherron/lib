@@ -1,14 +1,13 @@
 ---@diagnostic disable: undefined-doc-param, invisible
 
-local Set            = require 'toolbox.extensions.set'
-local TestUtils      = require 'toolbox.test.utils'
+local Set = require 'toolbox.extensions.set'
+local TestUtils = require 'toolbox.test.utils'
 
 local assert = require 'luassert.assert'
 
-local fmt          = TestUtils.fmt
+local fmt = TestUtils.fmt
 local table_equals = TestUtils.table_equals
-local table_len    = TestUtils.table_len
-
+local table_len = TestUtils.table_len
 
 --- A handler for an assert modifier that enables interactions w/ sets. For example:
 ---
@@ -34,7 +33,7 @@ local SetHandler = {}
 --- contain
 function SetHandler.contains(set, args)
   local should_contain = args[1]
-  assert(#should_contain > 0, fmt('#should_contains must be > 0'))
+  assert(#should_contain > 0, fmt '#should_contains must be > 0')
 
   local missing = nil
 
@@ -42,14 +41,13 @@ function SetHandler.contains(set, args)
     if set.items[e] == nil then
       missing = e
       args[1] = e
-      break   -- fail fast on first missing value
+      break -- fail fast on first missing value
     end
   end
 
   args.n = missing and 1 or 0
   return missing == nil, { missing }
 end
-
 
 --- A set assertion that checks that a set is empty, and whose negation checks that
 --- it isn't. For example:
@@ -66,7 +64,6 @@ function SetHandler.empty(set, args)
   args[1] = set_len
   return set_len == 0, { set_len }
 end
-
 
 --- A set assertion that checks that a set equals another set, and whose negation checks
 --- that it doesn't. For example:
@@ -85,7 +82,6 @@ function SetHandler.eq(set, args)
 
   return table_equals(set.items, other.items) and set.len == other.len, { other }
 end
-
 
 --- A set assertion that checks that a set is the same object as another set, and whose
 --- negation checks that it's not. For example:
@@ -106,7 +102,6 @@ function SetHandler.is(set, args)
   return rawequal(set, other), { other }
 end
 
-
 --- A set assertion that checks that a set has a specific length, and whose negation
 --- checks that it's length is anything other. For example:
 ---
@@ -126,4 +121,3 @@ function SetHandler.length(set, args)
 end
 
 return SetHandler
-

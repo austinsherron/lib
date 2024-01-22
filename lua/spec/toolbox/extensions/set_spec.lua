@@ -4,7 +4,6 @@ local assert = require 'luassert.assert'
 
 require 'toolbox.test.extensions'
 
-
 describe('Set', function()
   describe('.new(initial)', function()
     it('should create a new set w/ the values provided', function()
@@ -18,7 +17,7 @@ describe('Set', function()
     it('should create a new set w/ the values provided', function()
       assert.set(Set.of(1, 2, 3)).eq(Set.new({ 1, 2, 3 }))
       assert.set(Set.of(1, 1, 2, 3)).eq(Set.new({ 1, 1, 2, 3 }))
-      assert.set(Set.of('a')).eq(Set.new({ 'a' }))
+      assert.set(Set.of 'a').eq(Set.new({ 'a' }))
       assert.set(Set.of()).eq(Set.new())
     end)
   end)
@@ -26,7 +25,7 @@ describe('Set', function()
   describe('.only(item)', function()
     it('should create a new set w/ the value provided', function()
       assert.set(Set.only(1)).eq(Set.new({ 1 }))
-      assert.set(Set.only('a')).eq(Set.new({ 'a' }))
+      assert.set(Set.only 'a').eq(Set.new({ 'a' }))
       assert.set(Set.only(true)).eq(Set.new({ true }))
     end)
   end)
@@ -49,7 +48,7 @@ describe('Set', function()
       assert.set(set).eq(copy)
       assert.set(set).Not.is(copy)
 
-      copy:add('d')
+      copy:add 'd'
       assert.set(set).is_not.eq(copy)
     end)
   end)
@@ -59,7 +58,7 @@ describe('Set', function()
       local set = Set.of('a', 'b', 'c')
 
       assert.set(set).does_not.contain({ 'd' })
-      set:add('d')
+      set:add 'd'
       assert.set(set).contains({ 'd' })
     end)
     it('should add only one instance of an item to the set', function()
@@ -67,11 +66,11 @@ describe('Set', function()
 
       assert.set(set).length(3)
 
-      set:add('d')
+      set:add 'd'
       assert.set(set).contains({ 'd' })
       assert.set(set).length(4)
 
-      set:add('d')
+      set:add 'd'
       assert.set(set).contains({ 'd' })
       assert.set(set).length(4)
     end)
@@ -123,9 +122,9 @@ describe('Set', function()
       local s = Set.of('a', 'b', 'c', 'c')
 
       assert.equals(#s, 3)
-      s:add('a')
+      s:add 'a'
       assert.equals(#s, 3)
-      s:add('d')
+      s:add 'd'
       assert.equals(#s, 4)
       s:addall('d', 'a', 'f', 'e', 'gadzooks', 'c')
       assert.equals(#s, 7)
@@ -139,8 +138,8 @@ describe('Set', function()
 
       assert.True(l == r)
 
-      l:add('a')
-      r:add('c')
+      l:add 'a'
+      r:add 'c'
 
       assert.True(l == r)
 
@@ -183,7 +182,7 @@ describe('Set', function()
       local other = Set.of('b', 'c', 'd', 'e')
       local super = set - other
 
-      assert.set(super).eq(Set.only('a'))
+      assert.set(super).eq(Set.only 'a')
       assert.set(super).length(1)
       assert.set(super).Not.is(set)
       assert.set(super).Not.is(other)
@@ -221,9 +220,8 @@ describe('Set', function()
 
   describe(':__tostring()', function()
     it('should return a string representation of the set', function()
-      assert.equals(tostring(Set.only('a')), 'set(a)')
+      assert.equals(tostring(Set.only 'a'), 'set(a)')
       assert.equals(tostring(Set.only(1)), 'set(1)')
     end)
   end)
 end)
-
