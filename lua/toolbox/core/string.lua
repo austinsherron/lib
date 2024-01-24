@@ -35,6 +35,18 @@ function String.not_nil_or_empty(str)
   return str ~= nil and str ~= ''
 end
 
+--- Returns the length of str.
+---
+---@param str string|nil: the string to check
+---@return integer: the length of str or 0 if str == nil
+function String.len(str)
+  if str == nil then
+    return 0
+  end
+
+  return #str
+end
+
 --- Checks if str contains substr.
 ---
 ---@param str string: the string to check for containment of substr

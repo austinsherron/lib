@@ -1,3 +1,4 @@
+local Args = require 'toolbox.utils.args'
 local Common = require 'toolbox.core.__common'
 
 --- Contains utilities for interacting w/ and manipulating numerical values, measurements,
@@ -58,10 +59,10 @@ end
 
 --- Returns the largest of the provided values.
 ---
----@param ... number: the numbers out of which to find the max
+---@param ... number|number[]: vararg or array of numbers of which to find the max
 ---@return number: the largest of the provided values
 function Num.max(...)
-  local vals = Common.Table.pack(...)
+  local vals = Args.vararg_to_arr(...)
   local max = nil
 
   for _, val in ipairs(vals) do
@@ -75,10 +76,10 @@ end
 
 --- Returns the smallest of the provided values.
 ---
----@param ... number: the numbers out of which to find the min
+---@param ... number|number[]: vararg or array of numbers of which to find the min
 ---@return number: the smallest of the provided values
 function Num.min(...)
-  local vals = Common.Table.pack(...)
+  local vals = Args.vararg_to_arr(...)
   local min = nil
 
   for _, val in ipairs(vals) do

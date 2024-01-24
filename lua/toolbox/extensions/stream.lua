@@ -3,6 +3,7 @@ local Bool = require 'toolbox.core.bool'
 local Iter = require 'toolbox.utils.iter'
 local Lambda = require 'toolbox.functional.lambda'
 local Map = require 'toolbox.utils.map'
+local Num = require 'toolbox.core.num'
 local Set = require 'toolbox.extensions.set'
 
 --- A class that attempts to roughly replicate Java 8's Stream API:
@@ -173,7 +174,8 @@ function Collectors.to_set()
   end
 end
 
---- Creates a collector that, given an iterable, returns a stringified version of its entries.
+--- Creates a collector that, given an iterable, returns a stringified version of its
+--- entries.
 ---
 ---@generic T
 ---@param sep string: optional, defaults to ",": the string to use to join elements of the
@@ -191,13 +193,33 @@ end
 ---@generic T
 ---@param strict boolean|nil: optional, defaults to true; if true, raises an error if the
 ---- iterable is empty or contains more than one entry
----@return fun(it: Iterable): T[]: a function that, given an iterable, returns its only
+---@return fun(it: Iterable): T|nil: a function that, given an iterable, returns its only
 --- entry
 function Collectors.to_only(strict)
   strict = Bool.or_default(strict, true)
 
   return function(it)
     return Iter.Utils.get_only(it, strict)
+  end
+end
+
+--- Creates a collector that, given an iterable of numbers, returns its max.
+---
+---@return fun(it: Iterable): max: number: a function that, given an iterable of numbers,
+--- returns its max
+function Collectors.max()
+  return function(it)
+    return Num.max(it)
+  end
+end
+
+--- Creates a collector that, given an iterable of numbers, returns its min.
+---
+---@return fun(it: Iterable): min: number: a function that, given an iterable of numbers,
+--- returns its min
+function Collectors.min()
+  return function(it)
+    return Num.min(it)
   end
 end
 

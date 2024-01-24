@@ -18,6 +18,18 @@ function Common.Array.append(arr, item)
   table.insert(arr, item)
 end
 
+--- Returns the length of the provided array. A nil array's length is 0.
+--
+---@generic T
+---@param arr T[]|nil: the array whose length will be checked
+---@return integer: the length of the provided array; 0 if the array is nil
+function Common.Array.len(arr)
+  ---@diagnostic disable-next-line: return-type-mismatch
+  return Common.Bool.ternary(arr == nil, 0, function()
+    return #arr
+  end)
+end
+
 --- Recursively checks if two arrays are equal.
 ---
 ---@generic S, T (S ?= T)

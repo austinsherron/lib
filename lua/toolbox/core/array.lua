@@ -131,16 +131,9 @@ function Array.not_nil_or_empty(arr)
   return not Array.is_empty(arr, false)
 end
 
---- Returns the length of the provided array. A nil array's length is 0.
---
----@generic T
----@param arr T[]|nil: the array whose length will be checked
----@return integer: the length of the provided array; 0 if the array is nil
-function Array.len(arr)
-  ---@diagnostic disable-next-line: return-type-mismatch
-  return ternary(arr == nil, 0, function()
-    return #arr
-  end)
+---@see Common.Array.len
+function Array.len(...)
+  return Common.Array.len(...)
 end
 
 ---@see Common.Array.equals
