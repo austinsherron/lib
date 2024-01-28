@@ -1,6 +1,10 @@
 local Bool = require 'toolbox.core.bool'
 
----@alias Iterable { __mt: { __ipairs: (fun(...): integer, any)|nil, __pairs: (fun(...): any, any)|nil }}
+---@alias IterableMT { __ipairs: fun(...): integer, any }
+---@alias Iterable { __mt: IterableMT }
+
+---@alias DictIterableMT { __pairs: fun(...): any, any }
+---@alias DictIterable { __mt: DictIterableMT }
 
 --- Contains iterator "next" helper functions.
 --
@@ -93,7 +97,7 @@ end
 --- Contains utilities for interacting w/ iterables.
 ---
 ---@class IterUtils
-IterUtils = {}
+local IterUtils = {}
 
 ---@note: to expose IterUtils
 Iter.Utils = IterUtils
@@ -118,7 +122,7 @@ end
 --- Converts an iterable to a dict.
 ---
 ---@generic K, V, S, T
----@param it Iterable: the iterable to convert
+---@param it DictIterable: the iterable to convert
 ---@param map fun(k: K, v: V): S, T optional; a function that transforms k, v before
 --- adding it to the dict
 ---@return { [S]: T }: a dict comprised of key/value pairs from it, optionally transformed
@@ -160,7 +164,7 @@ end
 --- Gets the only item from the iterable.
 ---
 ---@generic T
----@param it Iterable: the iterable from which to retrieve the only value
+---@param it Iterable|DictIterable: the iterable from which to retrieve the only value
 ---@param strict boolean|nil: optional, defaults to true; if true, raises an error if the
 --- iterable is empty or contains more than one entry
 ---@return T|nil: the only item from it, or nil if strict is false and it is empty

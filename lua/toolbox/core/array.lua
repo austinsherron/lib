@@ -2,7 +2,6 @@ local Common = require 'toolbox.core.__common'
 local Lambda = require 'toolbox.functional.lambda'
 
 local or_default = Common.Bool.or_default
-local ternary = Common.Bool.ternary
 
 --- Parameterizes array sorting.
 ---
@@ -206,6 +205,35 @@ function Array.sorted(arr, opts)
 
   table.sort(arr, cmp)
   return arr
+end
+
+--- Removes from arr the value at index == i.
+---
+--- This function mutates arr.
+---
+---@generic T
+---@param arr T[]: the array from which to remove an item
+---@param i integer: the index of the value to remove
+---@return T: the removed value
+function Array.remove_at(arr, i)
+  return table.remove(arr, i)
+end
+
+--- Removes item from arr, if it exists.
+---
+--- This function mutates arr (if item exists in arr).
+---
+---@generic T
+---@param arr T[]: the array from which to remove an item
+---@param item T: the item to remove from arr
+---@return integer|nil: the index of the removed item, if it exists in arr
+function Array.remove(arr, item)
+  local i = Array.indexof(arr, item)
+
+  if i ~= nil then
+    table.remove(arr, i)
+    return i
+  end
 end
 
 ---@see Common.Array.append

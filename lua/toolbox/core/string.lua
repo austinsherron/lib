@@ -415,17 +415,29 @@ end
 ---@param str string: the string to split
 ---@param sep string|nil: optional, defaults to "whitespace"; the separator on which to
 --- split str
+---@param n integer|nil: optional; split n times; if nil, splits on all occurrences of sep
 ---@return string[]: an array like table of strings comprised of the provided string
 -- split wherever the substring sep is encountered; { str } if sep == nil
-function String.split(str, sep)
+function String.split(str, sep, n)
   local pattern = Common.Bool.ternary(sep ~= nil, function()
     return '([^' .. sep .. ']+)'
   end, '%S+')
 
+  local i = 0
   local split = {}
+  local rest = ''
 
   for part in string.gmatch(str, pattern) do
-    table.insert(split, part)
+    if n ~= nil and i == n then
+      rest = rest .. part
+    else
+      i = i + 1
+      table.insert(split, part)
+    end
+  end
+
+  if String.not_nil_or_empty(rest) then
+    table.insert(split, rest)
   end
 
   return split
