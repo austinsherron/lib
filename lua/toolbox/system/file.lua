@@ -71,26 +71,65 @@ function File.close(file, filepath)
   end
 end
 
+local function default_reader()
+  return function(file)
+    return file:read '*a'
+  end
+end
+
 --- Reads the file at the provided path in the given mode.
 ---
 ---@param filepath string: the path of the file to read
 ---@param mode openmode?: optional, defaults to "r"; the mode in which to open the file
 ---@return string?: content read from the file
 ---@return string?: an error message, if any
-function File.read(filepath, mode)
+function File.read(filepath, mode, reader)
+  reader = reader or default_reader()
+
   local file, err = File.open(filepath, mode or 'r')
   -- nil file check unnecessary, but makes interpreter happy
   if err ~= nil or file == nil then
     return nil, err
   end
 
-  local content, err = file:read '*a'
+  local content, err = reader(file)
   if err ~= nil then
     return nil, err
   end
 
   err = File.close(file, filepath)
   return content, err
+end
+
+local function n_lines_reader(n)
+  return function(file)
+    local iter = file:lines()
+    local lines = {}
+
+    for _ = 1, n do
+      local line = iter()
+
+      if line == nil then
+        return lines
+      end
+
+      table.insert(lines, line)
+    end
+
+    return lines
+  end
+end
+
+--- Reads n lines of the file at the provided path in the given mode. If n > # lines in
+--- the file, returns the file's entire contents.
+---
+---@param filepath string: the path of the file to read
+---@param n integer: >= 1; the number of lines to read
+---@param mode openmode?: optional, defaults to "r"; the mode in which to open the file
+---@return string?: n/# lines (whichever comes first) lines of content read from the file
+---@return string?: an error message, if any
+function File.read_n(filepath, n, mode)
+  return File.read(filepath, mode, n_lines_reader(n))
 end
 
 --- Append the provided content to the provided file.
