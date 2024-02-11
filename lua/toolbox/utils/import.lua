@@ -36,10 +36,9 @@ end
 ---@param dir string: the path to the directory from which to source lua files
 ---@param require_base string: the "require" string that, when combined w/ a file found
 -- by this function, makes a full/valid string for use w/ require
----@param process_require (fun(r: function, id: string): r: table)?: optional function to
----@diagnostic disable-next-line: deprecated
--- wrap the calls to require; note: !!! process_require must call the function "r" and
--- return its value for require_for_init to function as intended !!!
+---@param process_require (fun(r: function, id: string): table|nil)|nil: optional function
+--- to wrap the calls to require; note: process_require must call the function "r" and
+--- return its value for require_for_init to function as intended
 ---@return table: a compound table that consists of all return values from required modules
 ---@error if the provided "dir" isn't a dir
 function Import.require_for_init(dir, require_base, process_require)
