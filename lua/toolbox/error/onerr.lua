@@ -1,10 +1,46 @@
 local Error = require 'toolbox.error.error'
 
---- Contains utility methods that wrap function calls and perform specific actions when the
---- functions raise errors.
+local ternary = require('toolbox.core.bool').ternary
+
+--- Contains utility methods that wrap function calls and perform specific actions when
+--- those calls raise errors.
 ---
 ---@class OnErr
 local OnErr = {}
+
+local function make_err_msg(err_res, prefix)
+  err_res = err_res or ''
+
+  prefix = ternary(prefix == nil, '', function()
+    return prefix .. ': '
+  end)
+  return prefix .. err_res
+end
+
+---@return AppLogger
+local function get_logger()
+  if GetLogger ~= nil then
+    return GetLogger()
+  end
+
+  error 'OnErr.log: no log provider in scope (GetLogger == nil)'
+end
+
+--- On error, logs the error message.
+---
+---@param f function: the function that might throw an error
+---@param prefix string?: optional prefix for error msg
+---@param ... any?: args to pass to f
+function OnErr.log(f, prefix, ...)
+  local ok, res = xpcall(f, debug.traceback, ...)
+
+  if ok then
+    return res
+  end
+
+  local err_msg = make_err_msg(res, prefix)
+  get_logger():error(err_msg, {}, { user_facing = false })
+end
 
 --- On error, returns false.
 ---

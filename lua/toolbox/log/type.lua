@@ -73,10 +73,14 @@ end
 ---
 ---@enum LoggerTypes
 local LoggerTypes = {
+  -- internal
   NVIM = LoggerType.new(1, 'nvim', 'n'),
-  SNIPPET = LoggerType.new(2, 'luasnip', 's'),
-  LSP = LoggerType.new(3, 'lsp', 'l', { external = true }),
-  DIFFVIEW = LoggerType.new(4, 'diffview', 'd', { log_path = cachepath() .. '/diffview.log', external = true }),
+  HAMMERSPOON = LoggerType.new(2, 'nvim', 'n'),
+  XPLR = LoggerType.new(3, 'xplr', 'x'),
+  SNIPPET = LoggerType.new(4, 'luasnip', 's'),
+  -- external
+  LSP = LoggerType.new(5, 'lsp', 'l', { external = true }),
+  DIFFVIEW = LoggerType.new(6, 'diffview', 'd', { log_path = cachepath() .. '/diffview.log', external = true }),
 }
 
 local function make_types_by_keys()

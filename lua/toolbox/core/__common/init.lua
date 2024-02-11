@@ -335,8 +335,8 @@ end
 ---@return { [any]: any }: a new table created by performing a shallow copy of table l and
 --- merging table r into that copy
 function Common.Table.combine(l, r)
-  local new = Table.shallow_copy(l)
-  Table.merge(new, r)
+  local new = Common.Table.shallow_copy(l)
+  Common.Table.merge(new, r)
 
   return new
 end
