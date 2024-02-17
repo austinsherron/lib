@@ -2,6 +2,8 @@ local Path = require 'toolbox.system.path'
 local Shell = require 'toolbox.system.shell'
 local String = require 'toolbox.core.string'
 
+local fmt = String.fmt
+
 --- Contains utilities functions for importing ("requiring") lua code.
 ---
 ---@class Import
@@ -29,6 +31,43 @@ function Import.does_module_exist(module)
   end
 
   return false
+end
+
+--- Gets the current lua runtime path as an array of strings.
+---
+---@param raw boolean|nil: optional, defaults to false; if true, don't split the string
+--- into an array
+---@return string[]|string: the current lua runtime path as an array of strings, if not
+--- raw, or as a string if raw == true
+function Import.getpath(raw)
+  if raw == true then
+    return package.path
+  end
+
+  return String.split(package.path, ';')
+end
+
+local function make_package_paths(path)
+  return {
+    fmt('%s/?.lua', path),
+    fmt('%s/?/init.lua', path),
+  }
+end
+
+--- Adds path to the lua runtime path (i.e.: mutates package.path).
+---
+---@param path string: the path to add
+---@param dryrun boolean|nil: optional, defaults to false; if true, don't mutate
+--- package.paths
+---@return string: the updated path
+function Import.add_to_path(path, dryrun)
+  local package_paths = String.join(make_package_paths(path), ';')
+
+  if dryrun ~= true then
+    package.path = package.path .. ';' .. package_paths
+  end
+
+  return Import.getpath(true) .. ';' .. package_paths
 end
 
 --- Recursively require all non-"init.lua" lua files in the provided directory.
@@ -88,7 +127,7 @@ function Import.as_globals(dirpath)
   for _, child in ipairs(children) do
     if not Shell.is_dir(child) then
       local varname = String.capitalize(Path.filename(child))
-      local cmd = String.fmt("%s = dofile('%s')", varname, child)
+      local cmd = fmt("%s = dofile('%s')", varname, child)
 
       load(cmd)()
     end

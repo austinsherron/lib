@@ -42,7 +42,7 @@ end
 --- Returns a numeric representation of num, if possible.
 ---
 ---@param o any: an object to convert to a number, if possible.
----@return number: a numeric representation of num, or nil if o can't be converted to
+---@return number|nil: a numeric representation of num, or nil if o can't be converted to
 --- a number
 function Num.as(o)
   return tonumber(o)

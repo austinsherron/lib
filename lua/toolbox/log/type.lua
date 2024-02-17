@@ -1,14 +1,35 @@
+local Env = require 'toolbox.system.env'
+local Path = require 'toolbox.system.path'
+
 local fmt = require('toolbox.log.utils').fmt
---- TODO: refactor code so that this can be shared w/ nvim.lua.utils.api.vim.path
-local cachepath = function()
-  return vim.fn.stdpath 'cache'
-end
-local logpath = function()
-  return vim.fn.stdpath 'log'
+
+local BASE_LOG_FILE_PATH = '%s/%s.log'
+
+local function getpath(path_type, default)
+  if vim ~= nil then
+    return vim.fn.stdpath(path_type)
+  end
+
+  local std_path = Path[path_type]()
+
+  if std_path ~= nil then
+    return std_path
+  end
+
+  return default
 end
 
-local BASE_LOG_FILE_PATH = '%s/%s%s.log'
-local INTERNAL_SFX = '-user'
+--- TODO: refactor code so that this can be shared w/ nvim.lua.utils.api.vim.path
+--- TODO: figure out how to pass env vars to code paths that require the defaults
+--- (i.e.: hammerspoon)
+
+local function cachepath()
+  return getpath('cache', Env.home() .. '/.cache')
+end
+
+local function logpath()
+  return getpath('log', Env.home() .. '/.local/state')
+end
 
 ---@class LoggerTypeOpts
 ---@field log_path string|nil: optional; the absolute path to the file to which loggers of
@@ -31,9 +52,8 @@ local INTERNAL_SFX = '-user'
 local LoggerType = {}
 LoggerType.__index = LoggerType
 
-local function make_log_path(key, external)
-  local sfx = external and '' or INTERNAL_SFX
-  return fmt(BASE_LOG_FILE_PATH, logpath(), key, sfx)
+local function make_log_path(key)
+  return fmt(BASE_LOG_FILE_PATH, logpath(), key)
 end
 
 --- Constructor
@@ -47,7 +67,7 @@ function LoggerType.new(i, key, binding, opts)
   opts = opts or {}
 
   local external = opts.external or false
-  local log_path = opts.log_path or make_log_path(key, external)
+  local log_path = opts.log_path or make_log_path(key)
 
   return setmetatable({
     i = i,
@@ -75,7 +95,7 @@ end
 local LoggerTypes = {
   -- internal
   NVIM = LoggerType.new(1, 'nvim', 'n'),
-  HAMMERSPOON = LoggerType.new(2, 'nvim', 'n'),
+  HAMMERSPOON = LoggerType.new(2, 'hammerspoon', 'h'),
   XPLR = LoggerType.new(3, 'xplr', 'x'),
   SNIPPET = LoggerType.new(4, 'luasnip', 's'),
   -- external
