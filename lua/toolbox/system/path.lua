@@ -1,12 +1,32 @@
+local Array = require 'toolbox.core.array'
 local Env = require 'toolbox.system.env'
 local Stream = require 'toolbox.extensions.stream'
 local String = require 'toolbox.core.string'
+local Table = require 'toolbox.core.table'
 
 local ternary = require('toolbox.core.bool').ternary
 
 local fmt = String.fmt
 
 local Path = {}
+
+--- Joins the provided parts into a single path. Nil arguments are filtered out before
+--- constructing the final path.
+---
+---@param ... string: parts of a path
+---@return string: the provided parts joined into a single path
+function Path.concat(...)
+  local parts = Table.pack(...)
+  local filtered = {}
+
+  for _, part in ipairs(parts) do
+    if part ~= nil then
+      Array.append(filtered, part)
+    end
+  end
+
+  return String.join(filtered, '/')
+end
 
 --- Equivalent to dirname in POSIX systems. Sourced from
 --  https://github.com/Donearm/scripts/blob/master/lib/dirname.lua.
@@ -137,8 +157,7 @@ end
 ---@param subdir string|nil: and optional sub-directory path to append
 ---@return string: the path to the cache dir
 function Path.cache(subdir)
-  subdir = (subdir and ('/' .. subdir) or '')
-  return Env.xdg_cache_home() .. subdir
+  return Path.concat(Env.xdg_cache_home(), subdir)
 end
 
 --- Gets the "standard" config path based on xdg spec.
@@ -146,8 +165,7 @@ end
 ---@param subdir string|nil: and optional sub-directory path to append
 ---@return string: the path to the config subdir
 function Path.config(subdir)
-  subdir = (subdir and ('/' .. subdir) or '')
-  return Env.xdg_config_home() .. subdir
+  return Path.concat(Env.xdg_config_home(), subdir)
 end
 
 --- Gets the "standard" data path based on xdg spec.
@@ -155,8 +173,7 @@ end
 ---@param subdir string|nil: and optional sub-directory path to append
 ---@return string: the path to the data subdir
 function Path.data(subdir)
-  subdir = (subdir and ('/' .. subdir) or '')
-  return Env.xdg_data_home() .. subdir
+  return Path.concat(Env.xdg_data_home(), subdir)
 end
 
 --- Gets the "standard" log path based.
@@ -164,8 +181,7 @@ end
 ---@param subdir string|nil: and optional sub-directory path to append
 ---@return string: the path to the log subdir
 function Path.log(subdir)
-  subdir = (subdir and ('/' .. subdir) or '')
-  return Env.log_root() .. subdir
+  return Path.concat(Env.log_root(), subdir)
 end
 
 --- Gets the "standard" state path based on xdg spec.
@@ -173,8 +189,7 @@ end
 ---@param subdir string|nil: and optional sub-directory path to append
 ---@return string: the path to the state subdir
 function Path.state(subdir)
-  subdir = (subdir and ('/' .. subdir) or '')
-  return Env.xdg_state_home() .. subdir
+  return Path.concat(Env.xdg_state_home(), subdir)
 end
 
 return Path
