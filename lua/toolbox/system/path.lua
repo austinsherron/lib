@@ -1,3 +1,4 @@
+local Env = require 'toolbox.system.env'
 local Stream = require 'toolbox.extensions.stream'
 local String = require 'toolbox.core.string'
 
@@ -59,6 +60,7 @@ end
 --- Returns the path of the lua script that's currently executing. Sourced from
 --  https://stackoverflow.com/questions/6380820/get-containing-path-of-lua-file.
 --
+---@param depth integer|nil: call stack depth of the return script
 ---@return string: the path of the lua script that's currently executing
 function Path.script_path(depth)
   depth = depth or 2
@@ -128,6 +130,51 @@ function Path.get_children(rootpath, paths)
       return Path.ischild(rootpath, p)
     end)
     :collect()
+end
+
+--- Gets the "standard" cache path based on xdg spec.
+---
+---@param subdir string|nil: and optional sub-directory path to append
+---@return string: the path to the cache dir
+function Path.cache(subdir)
+  subdir = (subdir and ('/' .. subdir) or '')
+  return Env.xdg_cache_home() .. subdir
+end
+
+--- Gets the "standard" config path based on xdg spec.
+---
+---@param subdir string|nil: and optional sub-directory path to append
+---@return string: the path to the config subdir
+function Path.config(subdir)
+  subdir = (subdir and ('/' .. subdir) or '')
+  return Env.xdg_config_home() .. subdir
+end
+
+--- Gets the "standard" data path based on xdg spec.
+---
+---@param subdir string|nil: and optional sub-directory path to append
+---@return string: the path to the data subdir
+function Path.data(subdir)
+  subdir = (subdir and ('/' .. subdir) or '')
+  return Env.xdg_data_home() .. subdir
+end
+
+--- Gets the "standard" log path based.
+---
+---@param subdir string|nil: and optional sub-directory path to append
+---@return string: the path to the log subdir
+function Path.log(subdir)
+  subdir = (subdir and ('/' .. subdir) or '')
+  return Env.log_root() .. subdir
+end
+
+--- Gets the "standard" state path based on xdg spec.
+---
+---@param subdir string|nil: and optional sub-directory path to append
+---@return string: the path to the state subdir
+function Path.state(subdir)
+  subdir = (subdir and ('/' .. subdir) or '')
+  return Env.xdg_state_home() .. subdir
 end
 
 return Path

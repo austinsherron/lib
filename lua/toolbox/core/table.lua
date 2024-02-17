@@ -208,7 +208,7 @@ end
 ---@generic E, K, V
 ---@alias ArrayToDictKeyMapper fun(e: E, i: integer): k: K
 ---@alias ArrayToDictValueMapper fun(e: E, i: integer): v: V
----@alias ArrayToDictItemMapper fun(e: E, i: integer): k:K, v: V
+---@alias ArrayToDictItemMapper fun(e: E, i: integer): k: K, v: V
 
 ---@return ArrayToDictItemMapper
 local function make_to_dict_xfm_fn(xfms)

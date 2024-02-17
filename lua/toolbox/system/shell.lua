@@ -2,11 +2,16 @@ local Bool = require 'toolbox.core.bool'
 local Stream = require 'toolbox.extensions.stream'
 local String = require 'toolbox.core.string'
 
+local ternary = Bool.ternary
+
 local function make_cmd_silent_if_necessary(cmd, silent)
   silent = silent or false
-  return Bool.ternary(silent, cmd .. ' 2> /dev/null', cmd)
+  return ternary(silent, cmd .. ' 2> /dev/null', cmd)
 end
 
+--- Utilities for executing shell commands.
+---
+---@class Shell
 local Shell = {}
 
 --- Execute a shell command.
@@ -32,7 +37,7 @@ end
 ---@return integer|nil: the command's return code
 function Shell.mkdir(dirname, ignore_errors)
   ignore_errors = ignore_errors or false
-  local cmd_mod = Bool.ternary(ignore_errors, '-p', '')
+  local cmd_mod = ternary(ignore_errors, '-p', '')
 
   return Shell.run('mkdir ' .. cmd_mod .. ' ' .. dirname)
 end
@@ -104,7 +109,7 @@ function Shell.ls(path, basename)
   basename = basename or false
 
   local cmd_base = 'ls ' .. path
-  local cmd = Bool.ternary(basename, cmd_base .. ' | xargs -n 1 basename', cmd_base)
+  local cmd = ternary(basename, cmd_base .. ' | xargs -n 1 basename', cmd_base)
 
   local out = Shell.get_cmd_output(cmd, true)
   return Stream.new(String.split_lines(out) or {}):collect(function(arr)
@@ -121,11 +126,6 @@ function Shell.chmod_x(path)
   return Shell.run('chmod +x ' .. path)
 end
 
---- Gets the current "os type", i.e.: linux, etc.
----
---- TODO: test on other os types
---- WARN: untested on other os types
----
 ---@return string: the current "os type", i.e.: linux, etc
 function Shell.ostype()
   local uname = Shell.get_cmd_output 'uname -a'
