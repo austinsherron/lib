@@ -1,8 +1,9 @@
 local Array = require 'toolbox.core.array'
-local Class = require 'toolbox.meta.class'
 local Stream = require 'toolbox.extensions.stream'
 local String = require 'toolbox.core.string'
 local Table = require 'toolbox.core.table'
+
+local Class = require('toolbox.meta.class').Class
 
 --- Convenience class that wraps basic errors.
 ---

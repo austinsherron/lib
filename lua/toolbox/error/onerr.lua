@@ -17,7 +17,6 @@ local function make_err_msg(err_res, prefix)
   return prefix .. err_res
 end
 
----@return AppLogger
 local function get_logger()
   if GetLogger ~= nil then
     return GetLogger()
