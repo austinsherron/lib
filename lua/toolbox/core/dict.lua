@@ -64,6 +64,16 @@ function Dict.length(dict)
   return len
 end
 
+---@see Common.Dict.has_key
+function Dict.has_key(...)
+  return Common.Dict.has_key(...)
+end
+
+---@see Common.Dict.has_keys
+function Dict.has_keys(...)
+  return Common.Dict.has_keys(...)
+end
+
 --- Checks if two dicts are equals.
 
 ---@note: this function does not check metatables or account for cycles (self referencing

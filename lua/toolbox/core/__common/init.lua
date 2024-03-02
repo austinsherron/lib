@@ -168,6 +168,37 @@ function Common.Bool.or_default(bool, default)
   return Common.Bool.ternary(bool == nil, default, bool)
 end
 
+---@class Common.Dict
+Common.Dict = {}
+
+--- Checks that dict contains the provided key.
+---
+---@generic K, V
+---@param dict { [K]: V }|nil: the dict to check
+---@param key any: the key to check
+---@return boolean: true if key is a key in dict (i.e.: maps to a non-nil value), false
+--- otherwise
+function Common.Dict.has_key(dict, key)
+  return dict ~= nil and dict[key] ~= nil
+end
+
+--- Checks that dict contains all the provided keys.
+---
+---@generic K, V
+---@param dict { [K]: V }|nil: the dict to check
+---@param keys any[]: the keys to check
+---@return boolean: true if every key in keys is a key in dict (i.e.: maps to a non-nil
+--- value), false otherwise
+function Common.Dict.has_keys(dict, keys)
+  for _, key in ipairs(keys) do
+    if not Common.Dict.has_key(dict, key) then
+      return false
+    end
+  end
+
+  return true
+end
+
 ---@class Common.Num
 Common.Num = {}
 
@@ -243,12 +274,20 @@ end
 ---@class Common.Table
 Common.Table = {}
 
---- Util that determines whether the provided value is a table.
+--- Util that determines whether the provided value is a table. Optionally checks that, if
+--- the value is a table, it conforms to the provided spec.
 ---
----@param o any?: the value to check
----@return boolean: true if o is a table, false otherwise
-function Common.Table.is(o)
-  return type(o) == 'table'
+---@param o any|nil: the value to check
+---@param spec string[]|nil: optional; if o is a table, an array of fields it must have
+---@return boolean: true if o is a table and optionally conforms to spec, false otherwise
+function Common.Table.is(o, spec)
+  if type(o) ~= 'table' then
+    return false
+  elseif spec == nil then
+    return true
+  end
+
+  return Common.Dict.has_keys(o, spec)
 end
 
 --- TODO: remove in favor of Dict function.
@@ -297,6 +336,18 @@ function Common.Table.pack(...)
   -- want (or haven't found a reason to yet)
   packed.n = nil
   return packed
+end
+
+--- Consolidates table.unpack vs unpack check that's necessary in certain contexts.
+---
+---@see unpack
+---@see table.unpack
+---@param tbl table: the table to unpack
+---@return ...: the elements of tbl
+function Common.Table.unpack(tbl)
+  unpack = unpack or table.unpack
+
+  return unpack(tbl)
 end
 
 --- Creates a "shallow copy" of the provided table, i.e.: creates a new table to which

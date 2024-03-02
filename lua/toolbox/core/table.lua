@@ -125,16 +125,9 @@ function Table.pack(...)
   return Common.Table.pack(...)
 end
 
---- Consolidates table.unpack vs unpack check that's necessary in certain contexts.
----
----@see unpack
----@see table.unpack
----@param tbl table: the table to unpack
----@return ...: the elements of tbl
-function Table.unpack(tbl)
-  unpack = unpack or table.unpack
-
-  return unpack(tbl)
+---@see Common.Table.unpack
+function Table.unpack(...)
+  return Common.Table.unpack(...)
 end
 
 --- Returns the only key-value pair from tbl. If strict == false and #tbl ~= 1, returns:
