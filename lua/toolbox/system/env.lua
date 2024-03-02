@@ -35,6 +35,10 @@ function Env.new()
   return setmetatable({}, Env)
 end
 
+local function get(envvar)
+  return Callable.new(os.getenv(envvar:upper()))
+end
+
 --- A custom __index function that allows callers to retrieve env values using
 --- functions named like lowercased versions of the variables being retrieved.
 ---
@@ -43,18 +47,20 @@ end
 ---@return Callable<string|nil>: a function that returns the string env var value that
 --- maps to the variable being retrieved, or nil if it doesn't exist
 function Env:__index(envvar)
-  return Callable.new(os.getenv(envvar:upper()))
+  return get(envvar)
 end
 
 --- Same as Env.__index, but directly return the value of the provided env var name (if it
 --- exists) instead of a function.
+---
+--- FIXME: this doesn't work and I can't for the life of me figure out why...
 ---
 ---@param envvar string: the lowercased name of the variable whose value is being
 --- retrieved
 ---@return string|nil: the string env var value that maps to the variable being retrieved,
 --- or nil if it doesn't exist
 function Env:get(envvar)
-  return self[envvar]()
+  return get(envvar)()
 end
 
 return Env.new()

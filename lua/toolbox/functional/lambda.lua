@@ -44,27 +44,45 @@ end
 Lambda.NEGATIVE = function(num)
   return -num
 end
+Lambda.ADD = function(l, r)
+  return l + r
+end
+Lambda.SUB = function(l, r)
+  return l - r
+end
 
---- Function that creates a single function by iteratively passing the output of functions
---- as input to the next.
+--- Creates a single function in which the provided functions are iteratively called w/
+--- the args passed to the outer function.
 ---
----@param fns function[]:
----@return function
-function Lambda.combine(fns)
-  if #fns == 0 then
+---@param ... function: functions to combine
+---@return function: a single function in which the provided functions are iteratively
+--- called w/ the args passed to the outer function; returns Lambda.NOOP if no functions
+--- are provided
+function Lambda.combine(...)
+  local fns = Common.Table.pack(...)
+
+  if Common.Table.nil_or_empty(fns) then
     return Lambda.NOOP
   end
 
-  local final = fns[1]
-  fns = Common.Array.slice(fns, 2)
-
-  for _, fn in ipairs(fns) do
-    final = function()
-      return fn(final())
+  return function(...)
+    for _, fn in ipairs(fns) do
+      fn(...)
     end
   end
+end
 
-  return final
+--- Returns a function that calls fn w/ the provided arguments.
+---
+---@param fn function: the function to call
+---@param ... any: arguments w/ which to call fn
+---@return function: a function that calls fn w/ the provided arguments
+function Lambda.make(fn, ...)
+  local args = Common.Table.pack(...)
+
+  return function()
+    fn(Common.Table.unpack(args))
+  end
 end
 
 return Lambda
