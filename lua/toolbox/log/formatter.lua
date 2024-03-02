@@ -81,7 +81,7 @@ end
 -- end
 
 local function get_date_string(opts)
-  if opts.with_date ~= nil and not opts.with_date then
+  if opts.with_date == false then
     return ''
   end
 

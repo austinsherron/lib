@@ -3,13 +3,11 @@ local Formatter = require 'toolbox.log.formatter'
 local LogLevel = require 'toolbox.log.level'
 local Utils = require 'toolbox.log.utils'
 
--- local Introspect = require 'toolbox.meta.introspect'
-
 local fmt = Utils.fmt
 
----@alias LogOpts { sep: string|nil, endln: string|nil }
+---@alias LoggerOpts { with_date: boolean|nil, endln: string|nil }
 --TODO: class should be strongly typed
----@alias LogMethod fun(class: table, l: any, a: any[]|nil, o: LogOpts|nil)
+---@alias LogMethod fun(class: table, l: any, a: any[]|nil, o: LoggerOpts|nil)
 
 --- A logger that writes messages to arbitrary log files.
 ---
