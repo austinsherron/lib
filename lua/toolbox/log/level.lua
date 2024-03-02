@@ -44,14 +44,15 @@ end
 --- Checks if the provided object is equal to this log level.
 ---
 ---@param o any|nil: the other object
----@return boolean: true if the provided object is equal to this log level, false otherwise
+---@return boolean: true if the provided object is equal to this log level, false
+--- otherwise
 function LogLevel:__eq(o)
   return compare_maybe_level(self, o, function(l, r)
     return l == r
   end) or false
 end
 
---- Checks if this log level is < the provided object.
+--- Checks if this log level is < the provided level.
 ---
 ---@param o LogLevel: the other object
 ---@return boolean: true if this log level is < the provided object, false otherwise
