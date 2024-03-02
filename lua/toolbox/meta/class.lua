@@ -5,6 +5,23 @@ local String = require 'toolbox.core.string'
 ---@class Class
 local Class = {}
 
+--- Makes the provided class callable.
+---
+---@generic T
+---@param clazz T: the class to make callable
+---@param fn string|nil: optional, defaults to "new", the name of the class function to
+--- use for calls
+---@return T: a callable version of the provided class
+function Class.callable(clazz, fn)
+  fn = fn or 'new'
+
+  return setmetatable(clazz, {
+    __call = function(_, ...)
+      return clazz[fn](...)
+    end,
+  })
+end
+
 --- A "constructor" for a class w/ a constructor. The return value of this function can be
 --  used for method and property definition, etc., just like a regular lua "class".
 --
@@ -47,4 +64,7 @@ function Class.new(constructor)
   return Clazz
 end
 
-return Class.new
+return {
+  Class = Class.new,
+  callable = Class.callable,
+}
