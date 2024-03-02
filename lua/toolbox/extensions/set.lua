@@ -10,6 +10,22 @@ local Table = require 'toolbox.core.table'
 local Set = {}
 Set.__index = Set
 
+--- Checks that the provided set is either nil or empty.
+---
+---@param set Set: the set to check
+---@return boolean: true if set is either nil or empty, false otherwise
+function Set.nil_or_empty(set)
+  return set == nil or set:is_empty()
+end
+
+--- Checks that the provided set is neither nil nor empty.
+---
+---@param set Set: the set to check
+---@return boolean: true if set is neither nil nor empty, false otherwise
+function Set.not_nil_or_empty(set)
+  return set ~= nil and not set:is_empty()
+end
+
 local function add(item, set)
   if set.items[item] == nil then
     set.len = set.len + 1
@@ -153,6 +169,11 @@ function Set:subset_of(o)
   end
 
   return true
+end
+
+---@return boolean: true if the set is empty, false otherwise
+function Set:is_empty()
+  return #self == 0
 end
 
 --- Returns the number of items in the set.
