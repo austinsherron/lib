@@ -48,6 +48,15 @@ function Num.as(o)
   return tonumber(o)
 end
 
+--- Returns the absolute value of num.
+---
+---@see math.abs
+---@param num number: the number for which to return an absolute value
+---@return number: the absolute value of num
+function Num.abs(num)
+  return math.abs(num)
+end
+
 --- Returns the first integer smaller than num.
 ---
 ---@see math.floor
