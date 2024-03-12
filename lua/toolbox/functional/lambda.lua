@@ -85,4 +85,16 @@ function Lambda.make(fn, ...)
   end
 end
 
+--- Returns a functional version of an object method.
+---
+---@generic O, R
+---@param fn fun(O, ...): R the method
+---@param obj R: the object w/ which to call the method (i.e.: self)
+---@return fun(...): R a functional version of an object method
+function Lambda.method(fn, obj)
+  return function(...)
+    return fn(obj, ...)
+  end
+end
+
 return Lambda

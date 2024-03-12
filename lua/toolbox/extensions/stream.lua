@@ -1,5 +1,6 @@
 local Array = require 'toolbox.core.array'
 local Bool = require 'toolbox.core.bool'
+local Class = require 'toolbox.meta.class'
 local Iter = require 'toolbox.utils.iter'
 local Lambda = require 'toolbox.functional.lambda'
 local Map = require 'toolbox.utils.map'
@@ -223,4 +224,4 @@ function Collectors.min()
   end
 end
 
-return Stream
+return Class.callable(Stream)
