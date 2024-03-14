@@ -267,6 +267,24 @@ function Array.appendall(arr, append)
   end
 end
 
+--- Concatenates all provided arrays into a new array. Input order of items is maintained
+--- in new array
+---
+---@param ... any[]: vararg of array to concatenate
+---@return any[]: a new array that contains all items in inputs arrays
+function Array.concatenated(...)
+  local arrs = Common.Table.pack(...)
+  local out = {}
+
+  for _, arr in ipairs(arrs) do
+    for _, item in ipairs(arr) do
+      Array.append(out, item)
+    end
+  end
+
+  return out
+end
+
 --- Prepends item to arr.
 ---
 ---@generic T
