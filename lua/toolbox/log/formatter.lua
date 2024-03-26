@@ -57,8 +57,12 @@ local function get_level_string(level)
   return fmt('[%s] ', level)
 end
 
-local function get_label_string(label)
-  if nil_or_empty(label) then
+local function get_label_string(label, type)
+  if type == nil or nil_or_empty(label) then
+    return ''
+  end
+
+  if type.opts.file_per_prefix == true then
     return ''
   end
 
@@ -88,10 +92,10 @@ local function get_date_string(opts)
   return fmt(' [%s]', Datetime.now())
 end
 
-local function make_log_line(level, label, to_log, args, opts)
+local function make_log_line(level, type, label, to_log, args, opts)
   local parts = {
     get_level_string(level),
-    get_label_string(label),
+    get_label_string(label, type),
     get_msg_string(to_log, args),
     get_date_string(opts),
   }
@@ -102,16 +106,18 @@ end
 --- Entry point for formatting lines for log files.
 ---
 ---@param level LogLevel: the log level to use, if any
+---@param type LoggerType: the type of the logger, i.e.: where logs are written, for which
+--- component, etc.
 ---@param label string|nil: optional; the logger's label
 ---@param to_log any: a formattable log string, or an object to log
 ---@param args any[]|nil: objects to format into to_log
 ---@param opts table|nil: options that parameterize logging
 ---@return string: a formatted log string
-function LogFormatter.format(level, label, to_log, args, opts)
+function LogFormatter.format(level, type, label, to_log, args, opts)
   args = args or {}
   opts = opts or {}
 
-  return make_log_line(level, label, to_log, args, opts)
+  return make_log_line(level, type, label, to_log, args, opts)
 end
 
 --- Entry point for formatting lines for notifications.
@@ -125,7 +131,7 @@ function LogFormatter.notify_format(to_log, args, opts)
   opts = opts or {}
 
   opts.with_date = false
-  return make_log_line(LogLevel.NIL, nil, to_log, args, opts)
+  return make_log_line(LogLevel.NIL, nil, nil, to_log, args, opts)
 end
 
 return LogFormatter
