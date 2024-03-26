@@ -41,9 +41,9 @@ end
 --- Opens the provided file.
 ---
 ---@param filepath string: the path of the file to open
----@param mode openmode?: optional, defaults to "r"; the mode in which to open the file
----@return (file*)?: a file handle, if the file was opened successfully
----@return string?: an error message, if an error was encountered
+---@param mode openmode|nil: optional, defaults to "r"; the mode in which to open the file
+---@return file*|nil: a file handle, if the file was opened successfully
+---@return string|nil: an error message, if an error was encountered
 function File.open(filepath, mode)
   local file, err = io.open(filepath, mode)
 

@@ -41,7 +41,7 @@ function Logger.new(type, level, label)
   end
 
   return setmetatable({
-    file = File.open(type.log_path, 'a+'),
+    file = File.open(type:get_log_path(label), 'a+'),
     level = LogLevel.or_default(level),
     type = type,
     label = label or '',
@@ -59,7 +59,7 @@ end
 
 ---@return string: path to the log file
 function Logger:log_path()
-  return self.type.log_path
+  return self.type:get_log_path(self.label)
 end
 
 ---@private
@@ -68,7 +68,7 @@ function Logger:log(to_log, level, args, opts)
     return
   end
 
-  to_log = Formatter.format(level, self.label, to_log, args, opts)
+  to_log = Formatter.format(level, self.type, self.label, to_log, args, opts)
   local err = File.append(self.file, to_log)
 
   if err ~= nil and err ~= '' then
@@ -89,9 +89,7 @@ function Logger:__index(k)
     return mt_val
   end
 
-  -- TODO: logs don't include the level or a timestamp since my recent refactor (I think);
-  --       I suspect the issue is right around here somewhere...
-  ---@note: this call will fail if fn_name doesn't refer to a valid log level
+  -- NOTE: this call will fail if fn_name doesn't refer to a valid log level
   local level = LogLevel.as(k)
 
   return function(_, to_log, args, opts)

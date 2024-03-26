@@ -39,7 +39,8 @@ function Shell.mkdir(dirname, ignore_errors)
   ignore_errors = ignore_errors or false
   local cmd_mod = ternary(ignore_errors, '-p', '')
 
-  return Shell.run('mkdir ' .. cmd_mod .. ' ' .. dirname)
+  local _, rc = Shell.run('mkdir ' .. cmd_mod .. ' ' .. dirname)
+  Shell.checkrc(rc, 'unable to mkidr ' .. dirname)
 end
 
 --- Copies the file/dir at path src to path dst.
@@ -130,6 +131,16 @@ end
 function Shell.ostype()
   local uname = Shell.get_cmd_output 'uname -a'
   return String.lower(String.trim_after(uname, ' '))
+end
+
+--- Raises an error w/ the provided msg if rc > 0.
+---
+---@param rc integer: a return code to check
+---@param err_msg string|nil: optional; an error message to propagate if rc > 0
+function Shell.checkrc(rc, err_msg, nil_err)
+  if rc == nil and nil_err and rc > 0 then
+    error(err_msg)
+  end
 end
 
 return Shell
