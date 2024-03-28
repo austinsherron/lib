@@ -1,4 +1,5 @@
 local Bool = require 'toolbox.core.bool'
+local Env = require 'toolbox.system.env'
 local Stream = require 'toolbox.extensions.stream'
 local String = require 'toolbox.core.string'
 
@@ -141,6 +142,28 @@ function Shell.checkrc(rc, err_msg, nil_err)
   if rc == nil and nil_err and rc > 0 then
     error(err_msg)
   end
+end
+
+--- Splits a path env var into a list of its constituent paths using the standard system
+--- path separator, ':' (colon).
+---
+---@param path string|nil: a path value, w/ paths separated by the standard system path
+--- separator, ':' (colon)
+---@return string[]: a path env var split into a list of its constituent paths using the
+--- standard system path separator, ':' (colon)
+function Shell.split_path(path)
+  return String.split(path or '', ':')
+end
+
+--- Read the shell path, i.e.: the env var at "$PATH".
+---
+---@param raw boolean|nil: optional, defaults to false; if true, don't split the path into
+--- a list of constituent paths
+---@return string[]|string: a list of paths in the shell path env var, or its raw string
+--- value if raw == true
+function Shell.path(raw)
+  local path = Env.path() or ''
+  return raw == true and path or Shell.split_path(path)
 end
 
 return Shell
