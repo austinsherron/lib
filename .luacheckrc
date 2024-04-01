@@ -10,6 +10,7 @@ max_line_length = 90
 
 globals = {
   -- external globals
+  'vim',
   'vim.g',
   'vim.o',
   'vim.opt',
