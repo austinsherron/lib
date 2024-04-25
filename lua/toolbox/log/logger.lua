@@ -6,8 +6,16 @@ local Utils = require 'toolbox.log.utils'
 local fmt = Utils.fmt
 
 ---@alias LoggerOpts { with_date: boolean|nil, endln: string|nil }
---TODO: class should be strongly typed
----@alias LogMethod fun(class: table, l: any, a: any[]|nil, o: LoggerOpts|nil)
+---@alias LogMethod fun(class: table, l: any, a: any[]|nil, LoggerOpts)
+
+--- Logger interface.
+---
+---@class AbstractLogger
+---@field trace LogMethod
+---@field debug LogMethod
+---@field info LogMethod
+---@field warn LogMethod
+---@field error LogMethod
 
 --- A logger that writes messages to arbitrary log files.
 ---

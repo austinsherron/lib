@@ -97,4 +97,16 @@ function Lambda.method(fn, obj)
   end
 end
 
+--- Returns a function that checks if its arguments is in the provided set.
+---
+---@generic T
+---@param set Set: the set to use for containment checks
+---@return fun(T): boolean a function that returns true if its arguments is in the
+--- provided set and false otherwise
+function Lambda.in_set(set)
+  return function(o)
+    return set:contains(o)
+  end
+end
+
 return Lambda
