@@ -319,6 +319,28 @@ function Common.Table.nil_or_empty(tbl)
   return tbl == nil or Common.Table.is_empty(tbl)
 end
 
+--- Creates an array-like table from the keys of tbl. An optional transform function can
+--- perform arbitrary transformations on extracted keys.
+---
+---@generic K, V, T
+---@param tbl { [K]: V }: the table from which to extract keys
+---@param transform (fun(k: K, v: V): m: T)|nil: an optional function to transform extracted
+--- keys
+---@return K[]|T[]: an array-like table that contains the keys of tbl, optionally transformed
+-- by the provided transform function
+function Common.Table.keys(tbl, transform)
+  local out = {}
+  transform = transform or function(k, _)
+    return k
+  end
+
+  for k, v in pairs(tbl) do
+    table.insert(out, transform(k, v))
+  end
+
+  return out
+end
+
 --- Home-baked "pack" table function.
 ---
 ---@see table.pack

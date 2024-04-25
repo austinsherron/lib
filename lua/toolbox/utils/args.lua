@@ -1,3 +1,4 @@
+local Array = require 'toolbox.core.array'
 local Common = require 'toolbox.core.__common'
 
 --- Contains utilities for interacting w/ function args.
@@ -13,9 +14,14 @@ local Args = {}
 --- "empty", an empty array
 function Args.filter_nil(...)
   local args = Common.Table.pack(...) or {}
+  -- because an array w/ a gap (nil) becomes dict-like, we extract the "arg dict's" keys
+  -- and sort them to ensure we maintain the original arg order
+  local arg_idxs = Array.sorted(Common.Table.keys(args))
   local out = {}
 
-  for _, arg in ipairs(args) do
+  for _, idx in ipairs(arg_idxs) do
+    local arg = args[idx]
+
     if arg ~= nil then
       table.insert(out, arg)
     end
